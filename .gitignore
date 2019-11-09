@@ -1,0 +1,8 @@
+.idea
+.env
+.phpintel/
+.DS_Store
+iw-sitemap.xml
+iw-sitemap-*.xml
+sitemap.xml
+.composer

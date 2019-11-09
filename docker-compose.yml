@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+
+  ## --------------------------------------------------
+  ## | Web Server - Php7.3.11-apache
+  ## --------------------------------------------------
+  app:
+    build:
+      context: .docker-compose/app
+      dockerfile: Dockerfile
+      args:
+        - WWW_DATA_USER_ID=${WWW_DATA_USER_ID}
+    container_name: app
+    volumes:
+      - ./app:/var/www/
+      - ./.docker-compose/backend/config/php.ini:/usr/local/etc/php/php.ini
+      - ./.data/app/log:/var/log/apache2
+    environment:
+      - WWW_DATA_USER_ID=${WWW_DATA_USER_ID}
+      - EXCLUDE_PORTS=443
+    ports:
+      - "${BACKEND_ADDRESS}:80"
+    restart: always
+    env_file:
+      - .env
+
+  ## --------------------------------------------------
+  ## | Database - MySQL 5.7.27
+  ## --------------------------------------------------
+  db:
+    image: mysql:5.7.27
+    container_name: db
+    volumes:
+      - ./.data/db:/var/lib/mysql
+    ports:
+      - "${DB_ADDRESS}:3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
