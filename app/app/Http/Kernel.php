@@ -2,8 +2,13 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\OnlyJsonResponseMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+/**
+ * Class Kernel
+ * @package App\Http
+ */
 class Kernel extends HttpKernel
 {
     /**
@@ -39,6 +44,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:60,1',
+            OnlyJsonResponseMiddleware::class,
             'bindings',
         ],
     ];
