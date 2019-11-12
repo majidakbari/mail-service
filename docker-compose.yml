@@ -15,7 +15,8 @@ services:
     volumes:
       - ./app:/var/www/
       - ./.docker-compose/backend/config/php.ini:/usr/local/etc/php/php.ini
-      - ./.data/app/log:/var/log/apache2
+      - ./.data/app/log/webserver:/var/log/apache2
+      - ./.data/app/log/supervisor:/var/log/supervisor
     environment:
       - WWW_DATA_USER_ID=${WWW_DATA_USER_ID}
       - EXCLUDE_PORTS=443

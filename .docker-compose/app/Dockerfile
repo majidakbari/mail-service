@@ -10,7 +10,8 @@ RUN apt-get update -y && \
         git \
         libzip-dev \
         zlib1g-dev \
-        libssl-dev && \
+        libssl-dev \
+        supervisor && \
         docker-php-ext-install -j$(nproc) zip \
         mbstring \
         pdo \
@@ -37,6 +38,7 @@ RUN chmod +x /usr/local/bin/*
 # Config apache and copy entrypoint
 COPY config/default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY config/expire.conf /etc/apache2/conf-enabled/
+COPY config/supervisor/* /etc/supervisor/conf.d/
 COPY ./entrypoint.sh /
 
 RUN \
