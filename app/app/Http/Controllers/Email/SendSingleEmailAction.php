@@ -22,7 +22,7 @@ class SendSingleEmailAction
      */
     public function __invoke(SendSingleEmailRequest $request): JsonResponse
     {
-        dispatch(new SendSingleEmailJob(Email::fromArray($request->all())))->onQueue(QueueManager::SINGLE_EMAIL_QUEUE)->onConnection('sync');
+        dispatch(new SendSingleEmailJob(Email::fromArray($request->all())))->onQueue(QueueManager::SINGLE_EMAIL_QUEUE);
 
         return APIResponse::success(null, Response::HTTP_NO_CONTENT);
     }

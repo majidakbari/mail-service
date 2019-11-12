@@ -23,6 +23,9 @@ services:
     ports:
       - "${BACKEND_ADDRESS}:80"
     restart: always
+    depends_on:
+      - db
+      - redis
     env_file:
       - .env
 

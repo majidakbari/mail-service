@@ -146,10 +146,11 @@ return [
                 'queue' => [
                     \App\ValueObjects\QueueManager::SINGLE_EMAIL_QUEUE,
                     \App\ValueObjects\QueueManager::BULK_EMAIL_QUEUE,
+                    \App\ValueObjects\QueueManager::FAILED_EMAIL_QUEUE
                 ],
                 'balance' => 'auto',
-                'processes' => 10,
-                'tries' => 3,
+                'processes' => 1,
+                'tries' => 1,
             ],
         ],
         'local' => [
@@ -158,10 +159,12 @@ return [
                 'queue' => [
                     \App\ValueObjects\QueueManager::SINGLE_EMAIL_QUEUE,
                     \App\ValueObjects\QueueManager::BULK_EMAIL_QUEUE,
+                    \App\ValueObjects\QueueManager::FAILED_EMAIL_QUEUE
+
                 ],
                 'balance' => 'auto',
-                'processes' => 3,
-                'tries' => 3,
+                'processes' => 1,
+                'tries' => 1,
             ],
         ],
     ],

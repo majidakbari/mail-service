@@ -12,4 +12,6 @@ class QueueManager
     const SINGLE_EMAIL_QUEUE = 'single-email';
 
     const BULK_EMAIL_QUEUE = 'bulk-email';
+
+    const FAILED_EMAIL_QUEUE = 'failed-email';
 }

@@ -50,21 +50,21 @@ class MailService
     /**
      * @param Email $email
      * @return bool
+     * @throws Exception
      */
     public function send(Email $email)
     {
-        $mailer = $this->prepareMailer();
-        $message = $this->prepareMessage($email);
-
         try {
+            $mailer = $this->prepareMailer();
+            $message = $this->prepareMessage($email);
             $mailer->send($message);
             $mailer->getTransport()->stop();
 
             return true;
 
         } catch (Exception $e) {
-            //@todo log
-            return false;
+            //We can have some kind of log here to monitor our SMTP relay performance, mailbox addresses and etc...
+            throw $e;
         }
     }
 

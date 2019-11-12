@@ -139,16 +139,8 @@ return [
             'host' => 'smtp.mailtrap.io',
             'port' => 587,
             'encryption' => 'tls',
-            'username' => '8f757c0bc22350f0dceade974f7dd0eb',
-            'password' => '450fcb5a1de1e093cb8b5184552e7ce2',
-        ],
-        [
-            'name' => 'MailJet',
-            'host' => 'in-v3.mailjet.com',
-            'port' => 465,
-            'encryption' => 'ssl',
-            'username' => '8f757c0bc22350f0dceade974f7dd0eb',
-            'password' => '450fcb5a1de1e093cb8b5184552e7ce2',
+            'username' => '636a4e5770e19d',
+            'password' => 'b3074b7d98c4e8 ',
         ],
         [
             'name' => 'SandGrid',
@@ -158,6 +150,15 @@ return [
             'username' => 'apikey',
             'password' => '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',
         ],
+        [
+            'name' => 'MailJet',
+            'host' => 'in-v3.mailjet.com',
+            'port' => 465,
+            'encryption' => 'ssl',
+            'username' => '8f757c0bc22350f0dceade974f7dd0eb',
+            'password' => '450fcb5a1de1e093cb8b5184552e7ce2',
+        ],
+
         // here we can add other SMTP relay providers
     ]
 
