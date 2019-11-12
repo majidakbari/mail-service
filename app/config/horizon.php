@@ -143,7 +143,10 @@ return [
         'production' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default'],
+                'queue' => [
+                    \App\ValueObjects\QueueManager::SINGLE_EMAIL_QUEUE,
+                    \App\ValueObjects\QueueManager::BULK_EMAIL_QUEUE,
+                ],
                 'balance' => 'auto',
                 'processes' => 10,
                 'tries' => 3,
@@ -152,7 +155,10 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default'],
+                'queue' => [
+                    \App\ValueObjects\QueueManager::SINGLE_EMAIL_QUEUE,
+                    \App\ValueObjects\QueueManager::BULK_EMAIL_QUEUE,
+                ],
                 'balance' => 'auto',
                 'processes' => 3,
                 'tries' => 3,

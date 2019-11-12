@@ -6,6 +6,7 @@ use App\Http\Requests\SendSingleEmailRequest;
 use App\Jobs\SendSingleEmailJob;
 use App\Tools\APIResponse;
 use App\ValueObjects\Email;
+use App\ValueObjects\QueueManager;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,7 +22,7 @@ class SendSingleEmailAction
      */
     public function __invoke(SendSingleEmailRequest $request): JsonResponse
     {
-        dispatch(new SendSingleEmailJob(Email::fromArray($request->all())));
+        dispatch(new SendSingleEmailJob(Email::fromArray($request->all())))->onQueue(QueueManager::SINGLE_EMAIL_QUEUE)->onConnection('sync');
 
         return APIResponse::success(null, Response::HTTP_NO_CONTENT);
     }
