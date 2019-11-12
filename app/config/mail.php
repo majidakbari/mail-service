@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'support@takeaway.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'majidakbariiii@sandgrid.com'),
+        'name' => env('MAIL_FROM_NAME', 'Majid Akbari'),
     ],
 
     /*
@@ -132,5 +132,22 @@ return [
     */
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
+
+    'providers' => [
+        'mailjet' => [
+            'host' => 'in-v3.mailjet.com',
+            'port' => 465,
+            'encryption' => 'ssl',
+            'username' => '8f757c0bc22350f0dceade974f7dd0eb',
+            'password' => '450fcb5a1de1e093cb8b5184552e7ce2',
+        ],
+        'sandgrid' => [
+            'host' => 'smtp.sendgrid.net',
+            'port' => 465,
+            'encryption' => 'ssl',
+            'username' => 'apikey',
+            'password' => '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',
+        ]
+    ]
 
 ];

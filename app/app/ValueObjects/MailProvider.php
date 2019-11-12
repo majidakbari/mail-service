@@ -118,7 +118,7 @@ class MailProvider
             $data['encryption'] ?? '',
             $data['username'] ?? '',
             $data['password'] ?? '',
-            $data['streamOptions'] ?? self::DEFAULT_STREAM_OPTIONS
+            $data['streamOptions'] ?? []
         );
     }
 }

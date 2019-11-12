@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Tools\FileHelper;
 use App\ValueObjects\Email;
 use App\ValueObjects\MailProvider;
 use Exception;
@@ -62,6 +63,7 @@ class MailService
             return true;
 
         } catch (Exception $e) {
+            //@todo log
             return false;
         }
     }
@@ -92,6 +94,10 @@ class MailService
      */
     private function prepareMessage(Email $email): Swift_Message
     {
+        if ($email->isMarkDown()) {
+            $email->setBody((new MarkdownToHTMLService())->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);
+        }
+
         $message = (new Swift_Message())
             ->setSubject($email->getSubject())
             ->setFrom($email->getFromAddress(), $email->getFromName())
@@ -100,13 +106,11 @@ class MailService
             ->setCc($email->getCc())
             ->setBcc($email->getBcc());
 
-        if ($email->getAttachFilePath()) {
-            if (file_exists($email->getAttachFilePath())) {
-                $message->attach(
-                    Swift_Attachment::fromPath($email->getAttachFilePath())
-                        ->setFilename($email->getAttachFileName())
-                );
-            }
+        if ($file = $email->getAttachFileCode()) {
+            $fileHelper = new FileHelper($file);
+            $message->attach(Swift_Attachment::fromPath($fileHelper->getFileAddress(),
+                $fileHelper->getMimeType())->setFilename($email->getAttachFileName())
+            );
         }
 
         return $message;

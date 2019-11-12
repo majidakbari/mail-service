@@ -10,7 +10,7 @@ namespace App\ValueObjects;
  * @property string $subject
  * @property string $body
  * @property string $bodyType
- * @property string $attachFilePath
+ * @property string $attachFileCode
  * @property string $attachFileName
  * @property array $bcc
  * @property array $cc
@@ -21,6 +21,8 @@ class Email
     const BODY_TYPE_HTML = 'text/html';
 
     const BODY_TYPE_TEXT = 'text/plain';
+
+    const BODY_TYPE_MARKDOWN = 'text/markdown';
 
     /**
      * @var string
@@ -49,7 +51,7 @@ class Email
     /**
      * @var string|null
      */
-    protected $attachFilePath;
+    protected $attachFileCode;
     /**
      * @var string|null
      */
@@ -72,7 +74,7 @@ class Email
      * @param string $bodyType
      * @param string $fromAddress
      * @param string $fromName
-     * @param string $attachFilePath
+     * @param string $attachFileCode
      * @param string $attachFileName
      * @param array $cc
      * @param array $bcc
@@ -84,7 +86,7 @@ class Email
         string $bodyType,
         string $fromAddress,
         string $fromName,
-        string $attachFilePath,
+        string $attachFileCode,
         string $attachFileName,
         array $cc,
         array $bcc
@@ -95,7 +97,7 @@ class Email
         $this->subject = $subject;
         $this->body = $body;
         $this->bodyType = $bodyType;
-        $this->attachFilePath = $attachFilePath;
+        $this->attachFileCode = $attachFileCode;
         $this->attachFileName = $attachFileName;
         $this->bcc = $bcc;
         $this->cc = $cc;
@@ -152,9 +154,9 @@ class Email
     /**
      * @return string|null
      */
-    public function getAttachFilePath(): ?string
+    public function getAttachFileCode(): ?string
     {
-        return $this->attachFilePath;
+        return $this->attachFileCode;
     }
 
     /**
@@ -182,6 +184,50 @@ class Email
     }
 
     /**
+     * @param string|null $attachFileCode
+     * @return Email
+     */
+    public function setAttachFileCode(?string $attachFileCode): Email
+    {
+        $this->attachFileCode = $attachFileCode;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $attachFileName
+     * @return Email
+     */
+    public function setAttachFileName(?string $attachFileName): Email
+    {
+        $this->attachFileName = $attachFileName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $body
+     * @return Email
+     */
+    public function setBody(string $body): Email
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @param string $bodyType
+     * @return Email
+     */
+    public function setBodyType(string $bodyType): Email
+    {
+        $this->bodyType = $bodyType;
+
+        return $this;
+    }
+
+    /**
      * @param array $data
      * @return Email
      */
@@ -194,10 +240,30 @@ class Email
             $data['bodyType'] ?? self::BODY_TYPE_TEXT,
             $data['fromAddress'] ?? config('mail.from.address'),
             $data['fromName'] ?? config('mail.from.name'),
-            $data['attachFilePath'] ?? null,
-            $data['attachFileName'] ?? null,
+            $data['attachFileCode'] ?? '',
+            $data['attachFileName'] ?? '',
             $data['bcc'] ?? [],
             $data['cc'] ?? []
         );
+    }
+
+    /**
+     * @return array
+     */
+    public static function getValidBodyTypes()
+    {
+        return [
+            self::BODY_TYPE_TEXT,
+            self::BODY_TYPE_HTML,
+            self::BODY_TYPE_MARKDOWN
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMarkDown(): bool
+    {
+        return $this->getBodyType() == self::BODY_TYPE_MARKDOWN;
     }
 }

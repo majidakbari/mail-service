@@ -117,6 +117,10 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
+
+    //Custom validation rules
+    'base64' => 'The :attribute must be a valid base64 code.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
