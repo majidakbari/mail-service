@@ -43,5 +43,12 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
 
 
+  ## --------------------------------------------------
+  ## | Queue and Cache and Session Provider ( Redis )
+  ## --------------------------------------------------
   redis:
-
+    image: redis:alpine
+    container_name: redis
+    expose:
+      - "6379"
+    restart: always
