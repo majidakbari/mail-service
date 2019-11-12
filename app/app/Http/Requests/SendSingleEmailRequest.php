@@ -31,7 +31,8 @@ class SendSingleEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'to' => 'required|email',
+            'to' => 'required|array|max:2',
+            'to.*' => 'required|email',
             'subject' => 'required|string',
             'body' => 'required|string',
             'bodyType' => ['required', Rule::in(Email::getValidBodyTypes())],
@@ -40,7 +41,10 @@ class SendSingleEmailRequest extends FormRequest
             'cc' => 'nullable|array',
             'cc.*' => 'nullable|email',
             'bcc' => 'nullable|array',
-            'bcc.*' => 'nullable|email'
+            'bcc.*' => 'nullable|email',
+            'fromAddress' => 'required|email',
+            'fromName' => 'required|string|max:255',
+
         ];
     }
 }

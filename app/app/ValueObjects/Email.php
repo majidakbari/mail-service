@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 /**
  * Class Email
- * @property string $to
+ * @property array $to
  * @property string $fromAddress
  * @property string $fromName
  * @property string $subject
@@ -25,7 +25,8 @@ class Email
     const BODY_TYPE_MARKDOWN = 'text/markdown';
 
     /**
-     * @var string
+     * @var array
+     * array of emails
      */
     protected $to;
     /**
@@ -68,7 +69,7 @@ class Email
 
     /**
      * Email constructor.
-     * @param string $to
+     * @param array $to
      * @param string $subject
      * @param string $body
      * @param string $bodyType
@@ -80,7 +81,7 @@ class Email
      * @param array $bcc
      */
     public function __construct(
-        string $to,
+        array $to,
         string $subject,
         string $body,
         string $bodyType,
@@ -104,9 +105,9 @@ class Email
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTo(): string
+    public function getTo(): array
     {
         return $this->to;
     }
