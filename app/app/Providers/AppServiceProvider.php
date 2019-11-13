@@ -2,8 +2,14 @@
 
 namespace App\Providers;
 
+use App\Interfaces\LogRepositoryInterface;
+use App\Repositories\MySQLLogRepository;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class AppServiceProvider
+ * @package App\Providers
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -23,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(LogRepositoryInterface::class, MySQLLogRepository::class);
     }
 }
