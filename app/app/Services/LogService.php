@@ -40,25 +40,28 @@ class LogService
     /**
      * @param Email $email
      * @param int|string $providerId
+     * @param null|string $failedReason
      * @return Log|Model
      */
-    public function fail(Email $email, $providerId)
+    public function fail(Email $email, $providerId, $failedReason = null)
     {
-        return $this->writeLogs($email, $providerId, false);
+        return $this->writeLogs($email, $providerId, $failedReason, false);
     }
 
     /**
      * @param Email $email
      * @param int|string $providerId
      * @param bool $success
+     * @param null|string $failedReason
      * @return Log|Model
      */
-    public function writeLogs(Email $email, $providerId, $success = true)
+    public function writeLogs(Email $email, $providerId, $failedReason = null, $success = true)
     {
         $log = (new Log())->fill([
             'to' => $email->getTo(),
             'body' => $email->getBody(),
             'email_metadata' => $email->getMetaData(),
+            'failed_reason' => $failedReason ?? '',
             'provider' => $providerId,
             'sent_at' => $success ? now() : null,
             'failed_at' => $success ? null : now()

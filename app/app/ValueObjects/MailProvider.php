@@ -14,6 +14,11 @@ class MailProvider
     ];
 
     /**
+     * @var int|string
+     */
+    protected $id;
+
+    /**
      * @var string
      */
     protected $host;
@@ -38,6 +43,15 @@ class MailProvider
      * @var array
      */
     protected $streamOptions;
+
+
+    /**
+     * @return int|string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string

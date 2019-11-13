@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model
 {
+    /*
+     * This constant is used when non of the SMTP providers could send the email
+     */
+    const NO_PROVIDERS = -1;
+
     /**
      * @var bool
      */
@@ -21,7 +26,7 @@ class Log extends Model
      * @var array
      */
     protected $fillable = [
-        'to', 'body', 'email_metadata', 'provider', 'sent_at', 'failed_at'
+        'to', 'body', 'email_metadata', 'provider', 'failed_reason','sent_at', 'failed_at'
     ];
 
     /**

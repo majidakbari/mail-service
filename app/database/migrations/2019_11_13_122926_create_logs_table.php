@@ -20,6 +20,7 @@ class CreateLogsTable extends Migration
             $table->bigIncrements('id');
             $table->string('to');
             $table->text('body');
+            $table->text('failed_reason')->nullable();
             $table->json('email_metadata')->nullable();
             $table->string('provider');
             $table->timestamp('sent_at')->nullable();

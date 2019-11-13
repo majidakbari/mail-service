@@ -2,10 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Entities\Log;
+use App\Services\LogService;
 use App\Services\MailService;
 use App\ValueObjects\Email;
 use App\ValueObjects\MailProvider;
 use App\ValueObjects\QueueManager;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -63,17 +66,20 @@ class SendSingleEmailJob implements ShouldQueue
 
     /**
      * Execute the job.
+     * @param LogService $logService
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
-    public function handle(): void
+    public function handle(LogService $logService): void
     {
         if (is_null($mailProvider = $this->getProvider())) {
-            //@todo failed to send email, log
+            $logService->fail($this->getEmail(), Log::NO_PROVIDERS);
+
             return;
         }
 
         (new MailService($mailProvider))->send($this->getEmail());
+        $logService->success($this->getEmail(), $mailProvider->getId());
     }
 
     /**
@@ -90,8 +96,14 @@ class SendSingleEmailJob implements ShouldQueue
         return null;
     }
 
-    public function failed($exception = null)
+    /**
+     * @param LogService $logService
+     * @param Exception|null $exception
+     */
+    public function failed(LogService $logService, Exception $exception = null)
     {
+        $logService->fail($this->getEmail(),$this->getProvider()->getId(), $exception->getMessage());
+
         dispatch(new static($this->getEmail(),
             $this->getProviderKey() + 1))->onQueue(QueueManager::FAILED_EMAIL_QUEUE);
     }
