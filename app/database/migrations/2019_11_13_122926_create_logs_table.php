@@ -22,8 +22,9 @@ class CreateLogsTable extends Migration
             $table->text('body');
             $table->json('email_metadata')->nullable();
             $table->string('provider');
-            $table->timestamp('sent_at');
-            $table->timestamp('failed_at');
+            $table->timestamp('sent_at')->nullable();
+            $table->timestamp('failed_at')->nullable();
+
         });
     }
 

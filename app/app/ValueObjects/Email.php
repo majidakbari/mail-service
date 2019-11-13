@@ -267,4 +267,20 @@ class Email
     {
         return $this->getBodyType() == self::BODY_TYPE_MARKDOWN;
     }
+
+    /**
+     * @return array
+     */
+    public function getMetaData()
+    {
+        return [
+            'subject' => $this->getSubject(),
+            'bodyType' => $this->getBodyType(),
+            'fromAddress' => $this->getFromAddress(),
+            'fromName' => $this->getFromName(),
+            'attachment' => !empty($this->getAttachFileCode()),
+            'cc' => $this->getCc(),
+            'bcc' => $this->getBcc(),
+        ];
+    }
 }

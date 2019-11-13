@@ -29,7 +29,7 @@ class MySQLAbstractRepository implements AbstractRepositoryInterface
      * @param Model $model
      * @return Model
      */
-    public function save(Model $model): Model
+    public function save(Model $model)
     {
         $model->save();
 
