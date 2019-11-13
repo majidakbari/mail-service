@@ -103,6 +103,7 @@ class MailProvider
 
     /**
      * MailProvider constructor.
+     * @param string|int $id
      * @param string $host
      * @param int $port
      * @param string $encryption
@@ -110,8 +111,9 @@ class MailProvider
      * @param string $password
      * @param array $streamOptions
      */
-    public function __construct(string $host, int $port, string $encryption, string $username, string $password, array $streamOptions)
+    public function __construct($id, string $host, int $port, string $encryption, string $username, string $password, array $streamOptions)
     {
+        $this->id = $id;
         $this->host = $host;
         $this->port = $port;
         $this->encryption = $encryption;
@@ -127,6 +129,7 @@ class MailProvider
     public static function fromArray(array $data): MailProvider
     {
         return new static(
+            $data['id'] ?? '',
             $data['host'] ?? '',
             $data['port'] ?? 0,
             $data['encryption'] ?? '',

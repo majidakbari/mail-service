@@ -10,4 +10,5 @@ return [
     'UnauthorizedException' => 'Forbidden',
     'ModelNotFoundException' => 'Not found',
     'too_many_attempts' => 'Too many attempts',
+    'no_provider_could_send_email' => 'Non of the email providers could send the email'
 ];

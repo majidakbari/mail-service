@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Entities\Log;
+use App\Exceptions\NoMailProviderCouldSendEmailException;
+use App\Interfaces\LogRepositoryInterface;
 use App\Services\LogService;
 use App\Services\MailService;
 use App\ValueObjects\Email;
@@ -14,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Swift_TransportException;
 
 /**
  * Class SendSingleEmailJob
@@ -73,12 +76,13 @@ class SendSingleEmailJob implements ShouldQueue
     public function handle(LogService $logService): void
     {
         if (is_null($mailProvider = $this->getProvider())) {
-            $logService->fail($this->getEmail(), Log::NO_PROVIDERS);
+            $logService->fail($this->getEmail(), Log::NO_PROVIDERS, trans('app.no_provider_could_send_email'));
 
-            return;
+            throw new NoMailProviderCouldSendEmailException();
         }
 
         (new MailService($mailProvider))->send($this->getEmail());
+
         $logService->success($this->getEmail(), $mailProvider->getId());
     }
 
@@ -97,14 +101,18 @@ class SendSingleEmailJob implements ShouldQueue
     }
 
     /**
-     * @param LogService $logService
-     * @param Exception|null $exception
+     * $logService
+     * @param null|Swift_TransportException $exception
      */
-    public function failed(LogService $logService, Exception $exception = null)
+    public function failed($exception = null)
     {
-        $logService->fail($this->getEmail(),$this->getProvider()->getId(), $exception->getMessage());
+        if ($exception instanceof Swift_TransportException) {
+            $logService = app()->get(LogService::class);
+            $logService->fail($this->getEmail(), $this->getProvider()->getId(),
+                $exception ? $exception->getMessage() : null);
 
-        dispatch(new static($this->getEmail(),
-            $this->getProviderKey() + 1))->onQueue(QueueManager::FAILED_EMAIL_QUEUE);
+            dispatch(new static($this->getEmail(),
+                $this->getProviderKey() + 1))->onQueue(QueueManager::FAILED_EMAIL_QUEUE);
+        }
     }
 }

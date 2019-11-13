@@ -139,31 +139,30 @@ return [
             //For adding new providers please specify new unique ids
             'id' => 1,
             'name' => 'MailTrap',
-            'host' => 'smtp.mailtrap.io',
+            'host' => 'smtp.mailtrap.io123',
             'port' => 587,
             'encryption' => 'tls',
             'username' => '636a4e5770e19d',
             'password' => 'b3074b7d98c4e8 ',
         ],
         [
-            'id' => 2,
-            'name' => 'SandGrid',
-            'host' => 'smtp.sendgrid.net',
-            'port' => 465,
-            'encryption' => 'ssl',
-            'username' => 'apikey',
-            'password' => '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',
-        ],
-        [
             'id' => 3,
             'name' => 'MailJet',
-            'host' => 'in-v3.mailjet.com',
+            'host' => 'in-v3.mailjet.com123',
             'port' => 465,
             'encryption' => 'ssl',
             'username' => '8f757c0bc22350f0dceade974f7dd0eb',
             'password' => '450fcb5a1de1e093cb8b5184552e7ce2',
         ],
-
+        [
+            'id' => 2,
+            'name' => 'SandGrid',
+            'host' => 'smtp.sendgrid.net123',
+            'port' => 465,
+            'encryption' => 'ssl',
+            'username' => 'apikey',
+            'password' => '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',
+        ],
         // here we can add other SMTP relay providers
     ]
 

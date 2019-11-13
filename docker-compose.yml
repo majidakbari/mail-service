@@ -56,3 +56,22 @@ services:
     expose:
       - "6379"
     restart: always
+
+
+
+  ## --------------------------------------------------
+  ## | PHPMyAdmin
+  ## --------------------------------------------------
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_PORT=3306
+      - PMA_HOST=db
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "${PMA_ADDRESS}:80"
