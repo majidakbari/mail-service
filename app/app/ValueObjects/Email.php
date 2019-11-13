@@ -25,7 +25,7 @@ class Email
     const BODY_TYPE_MARKDOWN = 'text/markdown';
 
     /**
-     * @var array
+     * @var string
      * array of emails
      */
     protected $to;
@@ -69,7 +69,7 @@ class Email
 
     /**
      * Email constructor.
-     * @param array $to
+     * @param string $to
      * @param string $subject
      * @param string $body
      * @param string $bodyType
@@ -81,7 +81,7 @@ class Email
      * @param array $bcc
      */
     public function __construct(
-        array $to,
+        string $to,
         string $subject,
         string $body,
         string $bodyType,
@@ -105,9 +105,9 @@ class Email
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getTo(): array
+    public function getTo(): string
     {
         return $this->to;
     }
