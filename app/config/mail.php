@@ -135,6 +135,9 @@ return [
 
     'providers' => [
         [
+            //in case of having normalized tables for log stuff, we use this id
+            //For adding new providers please specify new unique ids
+            'id' => 1,
             'name' => 'MailTrap',
             'host' => 'smtp.mailtrap.io',
             'port' => 587,
@@ -143,6 +146,7 @@ return [
             'password' => 'b3074b7d98c4e8 ',
         ],
         [
+            'id' => 2,
             'name' => 'SandGrid',
             'host' => 'smtp.sendgrid.net',
             'port' => 465,
@@ -151,6 +155,7 @@ return [
             'password' => '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',
         ],
         [
+            'id' => 3,
             'name' => 'MailJet',
             'host' => 'in-v3.mailjet.com',
             'port' => 465,
