@@ -14,7 +14,7 @@ class SendMultipleEmailRequest extends SendSingleEmailRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules['to'] = 'required|array';

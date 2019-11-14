@@ -19,7 +19,7 @@ class SendSingleEmailRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -29,7 +29,7 @@ class SendSingleEmailRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'to' => 'required|email',
