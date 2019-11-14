@@ -149,7 +149,8 @@ return [
                     \App\ValueObjects\QueueManager::FAILED_EMAIL_QUEUE
                 ],
                 'balance' => 'auto',
-                'processes' => 1,
+                'processes' => env('HORIZON_PROCESS_NUM', 4),
+                //We do not need to retry in this application, because it has fail over plan under the hood
                 'tries' => 1,
             ],
         ],
@@ -163,7 +164,7 @@ return [
 
                 ],
                 'balance' => 'auto',
-                'processes' => 1,
+                'processes' => 4,
                 'tries' => 1,
             ],
         ],
