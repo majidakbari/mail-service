@@ -139,7 +139,7 @@ return [
             //For adding new providers please specify new unique ids
             'id' => 1,
             'name' => 'MailTrap',
-            'host' => 'smtp.mailtrap.io123',
+            'host' => 'smtp.mailtrap.io',
             'port' => 587,
             'encryption' => 'tls',
             'username' => '636a4e5770e19d',
@@ -157,7 +157,7 @@ return [
         [
             'id' => 2,
             'name' => 'SandGrid',
-            'host' => 'smtp.sendgrid.net123',
+            'host' => 'smtp.sendgrid.net',
             'port' => 465,
             'encryption' => 'ssl',
             'username' => 'apikey',
