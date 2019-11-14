@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
-use Laravel\Horizon\Horizon;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
+/**
+ * Class HorizonServiceProvider
+ * @package App\Providers
+ */
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
     /**
@@ -20,7 +23,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         // Horizon::routeSmsNotificationsTo('15556667777');
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
-        
+
         // Horizon::night();
     }
 
@@ -33,10 +36,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate()
     {
-        Gate::define('viewHorizon', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
+        Gate::define('viewHorizon', function ($user = null) {
+            //It is obvious that you can define authorization for Horizon dashboard
+            return true;
         });
     }
 }
