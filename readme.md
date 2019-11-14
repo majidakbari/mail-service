@@ -1,9 +1,6 @@
 # Email Service
-This is just a standalone micro service which provides REST HTTP endpoints for sending emails.
-
-This project includes five docker containers based on `php-apache`, `MySQL`, `Redis`, `PHPMyAdmin` and `Swagger` images.
-
-It is under development, So the source code is mounted from the host to the containers. On the production environment you should remove these volumes.
+## Summary
+This application is just a standalone micro service which provides REST HTTP endpoints for sending emails.
 
 ## Features Overview
 * Fully isolated and dockerized application
@@ -12,7 +9,8 @@ It is under development, So the source code is mounted from the host to the cont
 * API documentation using `Swagger`
 * Infrastructure level logs(Web server and Supervisor logs)
 * Application level logs (For every single Email)
-* Increased code coverage by writing different unit testings
+* Increased code coverage by writing different unit tests
+* capable of sending `Markdown`, `HTML` and `Text` emails with files attached to them.
 
 ## Installation guide
 Follow these steps to simply run the project.
@@ -20,7 +18,7 @@ Follow these steps to simply run the project.
 ### Clone the project
 Clone this repository to your local machine using the following command:
 ```bash
-git clone
+git clone git@github.com:majidakbari/mail-service.git
 ```
 
 ### Environment variables
@@ -49,17 +47,17 @@ It will install the dependencies, creates .env laravel file, generates the appli
 docker-compose exec --user www-data app bootup
 ```
 ## Redundancy in sending emails
-Under the `config/mail.php` directory of laravel application, under `providers` key, you can add as many as Email(SMTP Relay) providers you want. They are used for sending emails. The first email provider is the default provider, if it wasn't able to send the mail, the second provider will take care of that email and so on. If none of the providers could send the email then just by adding a log record which indicates the situation, that job will be cleared from the queue. 
+Under the `config/mail.php` directory of the application, under `providers` key, you can add as many as Email(SMTP Relay) providers you want. They are used for sending emails. The first email provider is the default provider, if it wasn't able to send the mail, the second provider would take care of that email and so on. If none of the providers could send the email then just by adding a log record which indicates the situation, the email will be cleared from the queue. 
 
 ## Logs
 In this application there are two levels of logs, you can figure out more in the following topics:
 
 ### Infrastructure level logs
 In the root of the project, there is `.data` directory which is used to store logs (and also for saving database data). You can use your preferred logging tool like `ELK` and etc to manage them.
-Under the `.data/app/log` directory there are two different directories. The first one is `supervisor` which shows supervisor and horizon logs and the second one is `webserver` that stores apache server `access` and `error` logs.
+Under the `.data/app/log` directory there are two different directories. The first one is `supervisor` which shows supervisor and horizon logs and the second one is `webserver` which holds apache server `access` and `error` logs.
 
 ### Application level logs
-In the database which will be automatically created, there is a table which its name is `logs`. It shows all `successful` and `faled` emails. And also you can find the failure reason. 
+In the database which will be automatically created, there is a table which its name is `logs`. It shows all `successful` and `failed` emails. And also you can find the failure reason. 
 
 ## Horizon and managing queues
 This application uses laravel built in feature for queueing emails. Supervisor process manager and Horizon are responsible for consuming these queue records. You can simply monitor your queues on the following address. 
@@ -76,7 +74,10 @@ To run tests, in the terminal type the following command:
 docker-compose exec backend vendor/bin/phpunit
 ```
 
-## Images/Containers
+
+## Technical discussions (Images/Containers)
+This project includes five docker containers based on `php-apache`, `MySQL`, `Redis`, `PHPMyAdmin` and `Swagger` images.
+It is under development, So the source code is mounted from the host to the containers. On the production environment you should remove these volumes.
 
 `app`
 php:7.3.11-apache
