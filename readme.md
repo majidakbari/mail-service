@@ -50,7 +50,7 @@ docker-compose exec --user www-data app bootup
 ## Features descriptions 
 
 ### Redundancy in sending emails
-Under the `config/mail.php` directory of the application, under `providers` key, you can add as many as Email(SMTP Relay) providers you want. They are used for sending emails. The first email provider is the default provider, if it wasn't able to send the mail, the second provider would take care of that email and so on. If none of the providers could send the email then just by adding a log record which indicates the situation, the email will be cleared from the queue. 
+Under the `config/mail.php` directory of the application, under `providers` key, you can add as many Email(SMTP Relay) providers as you want. They are used for sending emails. The first email provider is the default provider, if it wasn't able to send the mail, the second provider would take care of that email and so on. If none of the providers could send the email then just by adding a log record which indicates the situation, the email will be cleared from the queue. 
 
 ### Logs
 In this application there are two levels of logs, you can figure out more in the following sections:
@@ -60,19 +60,19 @@ In the root of the project, there is `.data` directory which is used to store lo
 Under the `.data/app/log` directory there are two different directories. The first one is `supervisor` which shows supervisor and horizon logs and the second one is `webserver` which holds apache server `access` and `error` logs.
 
 #### Application level logs
-In the database which will be automatically created, there is a table which is named `logs`. It shows all `successful` and `failed` emails. And also you can find out the failure reason. 
+In the database which will be automatically created, there is a table which is named `logs`. It shows all `successful` and `failed` emails And also you can find out the failure reason. 
 
 ### Horizon and managing queues
-This application uses laravel built in feature for queueing emails. Redis in-memory database is used as queue driver and Supervisor process manager and Horizon are responsible for consuming these queue records. You can simply monitor your queues on the following address. 
-`{{backend_address}}/horizon` (default equals to http://localhost:9090/horizon)
+This application uses laravel built in feature for queueing emails. `Redis` in-memory database is used as queue driver. `Supervisor` process manager and `Horizon` are responsible for consuming these queue records. You can simply monitor your queues on the following address. 
+`localhost:{{backend_address}}/horizon` (default equals to http://localhost:9090/horizon)
 ### API Documentation
 Models and endpoints are fully specified using swagger openApi.
-Simply navigate to `{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see API documentation.
+Simply navigate to `localhost:{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see API documentation.
 
 ### Database management
-If you want to manually browse the database you can use `phpmyadmin` container which is installed on this project because it is common and popular.
+If you want to browse the database manually, you can use `phpmyadmin` container which is installed on this project, because it is common and easy to use.
 Navigate to the following address to see DB structure.
-`{{PMA_ADDRESS}}` (default equals to http://localhost:9092)
+`localhost:{{PMA_ADDRESS}}` (default equals to http://localhost:9092)
 
 ### Tests
 To run tests, in the terminal type the following command:
