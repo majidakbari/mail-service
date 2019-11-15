@@ -1,0 +1,474 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Email service API documentation",
+    "description": "Stand alone email micro service",
+    "contact": {
+      "name": "Majid Akbari",
+      "email": "majidakbariiii@gmail.com",
+      "url": "http://github.com/majidakbari"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://choosealicense.com/licenses/mit/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9090"
+    }
+  ],
+  "paths": {
+    "/api/email": {
+      "post": {
+        "tags": [
+          "Sending email"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "Response content type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "description": "It Will push the email into the application queue and it will be sent as soon as possible",
+        "operationId": "SingleEmail",
+        "responses": {
+          "204": {
+            "description": "Success",
+            "content": {}
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThrottleRequestsException"
+                },
+                "example": {
+                  "error": "ThrottleRequestsException",
+                  "message": "Too many attempts"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationException"
+                },
+                "example": {
+                  "error": "ValidationException",
+                  "message": {
+                    "to": [
+                      "The to field is required."
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MethodNotAllowedHttpException"
+                },
+                "example": {
+                  "error": "MethodNotAllowedHttpException",
+                  "message": "Http method is invalid"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Invalid accept header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAcceptHeaderException"
+                },
+                "example": {
+                  "error": "InvalidAcceptHeaderException",
+                  "message": "This application only supports json response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralException"
+                },
+                "example": {
+                  "error": "Exception",
+                  "message": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/email/multiple": {
+      "post": {
+        "tags": [
+          "Sending multiple emails"
+        ],
+        "parameters": [],
+        "description": "It will push all the emails into the application queue and they will be sent as soon as possible",
+        "operationId": "MultipleEmails",
+        "responses": {
+          "200": {
+            "description": "All users",
+            "content": {
+              "application/json": {
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/log": {
+      "get": {
+        "tags": [
+          "Get logs"
+        ],
+        "parameters": [],
+        "description": "By this endpoint you can search for logs of email sending based on an email address",
+        "operationId": "LogSearch",
+        "responses": {
+          "200": {
+            "description": "All users",
+            "content": {
+              "application/json": {
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Email": {
+        "description": "The email object",
+        "type": "object",
+        "required": [
+          "to",
+          "subject",
+          "body",
+          "bodyType",
+          "fromName",
+          "fromAddress"
+        ],
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "The email recipient (a valid email address)"
+          },
+          "subject": {
+            "type": "string",
+            "description": "The email subject"
+          },
+          "body": {
+            "type": "string",
+            "description": "Email body, it can hold `HTML` data, `markdown` or `plaintext` data"
+          },
+          "bodyType": {
+            "type": "string",
+            "description": "Email content type",
+            "enum": [
+              "text/html",
+              "text/plain",
+              "text/markdown"
+            ]
+          },
+          "fromName": {
+            "type": "string",
+            "description": "The sender name in the email"
+          },
+          "fromAddress": {
+            "type": "string",
+            "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's DMARC policy"
+          },
+          "attachFileCode": {
+            "type": "string",
+            "description": "Base64 encoded of the file you want to attach to the email"
+          },
+          "attachFileName": {
+            "type": "string",
+            "description": "Name of the file that you want to attach to the email"
+          },
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "A valid email address"
+            }
+          },
+          "bcc": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "A valid email address"
+            }
+          }
+        }
+      },
+      "Log": {
+        "description": "The log object",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Specifies the email address for the log record",
+            "readOnly": true
+          },
+          "body": {
+            "type": "string",
+            "description": "The email body",
+            "readOnly": true
+          },
+          "email_metadata": {
+            "type": "object",
+            "description": "Email meta data like cc, bcc and etc...",
+            "readOnly": true,
+            "properties": {
+              "subject": {
+                "type": "string",
+                "description": "The email subject",
+                "readOnly": true
+              },
+              "bodyType": {
+                "type": "string",
+                "description": "Email content type",
+                "enum": [
+                  "text/html",
+                  "text/plain",
+                  "text/markdown"
+                ],
+                "readOnly": true
+              },
+              "fromAddress": {
+                "type": "string",
+                "description": "The sender email address",
+                "readOnly": true
+              },
+              "fromName": {
+                "type": "string",
+                "description": "The sender email name",
+                "readOnly": true
+              },
+              "attachment": {
+                "type": "boolean",
+                "description": "Indicates that the email had attachment or not",
+                "readOnly": true
+              },
+              "cc": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "A valid email address"
+                },
+                "readOnly": true
+              },
+              "bcc": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "A valid email address"
+                },
+                "readOnly": true
+              }
+            }
+          },
+          "provider_name": {
+            "type": "string",
+            "description": "Specifies name of the provider which is used to send the email",
+            "readOnly": true
+          },
+          "failed_reason": {
+            "type": "string",
+            "description": "Specifies the failure reason",
+            "readOnly": true
+          },
+          "sent_at": {
+            "type": "string",
+            "example": "2019-11-09 12:00:00",
+            "description": "When this property is filled, it means that the email was sent successfully"
+          },
+          "failed_at": {
+            "type": "string",
+            "example": "2019-11-09 12:00:00",
+            "description": "When this property is filled, it means that the email was not sent and some error occurred"
+          }
+        }
+      },
+      "ModelNotFoundException": {
+        "description": "Model not found - 404",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "ModelNotFoundException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Not found",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "NotFoundHttpException": {
+        "description": "Route not found - 404",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "NotFoundHttpException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "The requested route was not found on the server",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "MethodNotAllowedHttpException": {
+        "description": "HTTP method is invalid - 405",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "MethodNotAllowedHttpException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Http method is invalid",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "InvalidAcceptHeaderException": {
+        "description": "The `Accept` header in the HTTP request is invalid - 406",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "InvalidAcceptHeaderException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "This application only supports json response",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "ValidationException": {
+        "description": "The Validation error - 422",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "ValidationException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "object",
+            "properties": {
+              "mandatory_fields" : {
+                "description": "They may be different based on the request rules"
+              }
+            },
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "ThrottleRequestsException": {
+        "description": "Too many request - 429",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "ThrottleRequestsException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Too many attempts",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "GeneralException": {
+        "description": "Unhandled errors - 500",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "Exception",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Error",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      }
+    }
+  }
+}
+

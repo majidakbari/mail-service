@@ -46,9 +46,8 @@ services:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
 
-
   ## --------------------------------------------------
-  ## | Queue and Cache and Session Provider ( Redis )
+  ## | Redis - Queue and Cache and Session Provider
   ## --------------------------------------------------
   redis:
     image: redis:alpine
@@ -57,10 +56,8 @@ services:
       - "6379"
     restart: always
 
-
-
   ## --------------------------------------------------
-  ## | PHPMyAdmin
+  ## | PHPMyAdmin - Handle the administration of MySQL
   ## --------------------------------------------------
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -75,3 +72,16 @@ services:
       - db
     ports:
       - "${PMA_ADDRESS}:80"
+
+  ## --------------------------------------------------
+  ## | Swagger - API Documentation
+  ## --------------------------------------------------
+  swagger:
+    image: swaggerapi/swagger-ui
+    container_name: swagger
+    ports:
+      - "${SWAGGER_ADDRESS}:8080"
+    volumes:
+      - ./.data/swagger/openapi.json:/openapi.json
+    environment:
+      SWAGGER_JSON: /openapi.json

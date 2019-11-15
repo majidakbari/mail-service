@@ -9,6 +9,11 @@ namespace App\ValueObjects;
  */
 class MailProvider
 {
+    /*
+    * This constant is used when non of the SMTP providers could send the email
+    */
+    const NO_PROVIDERS = -1;
+
     const DEFAULT_STREAM_OPTIONS = [
         'ssl' => ['allow_self_signed' => true, 'verify_peer' => false]
     ];

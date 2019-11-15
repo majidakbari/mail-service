@@ -5,6 +5,10 @@ if (!function_exists('get_class_name')) {
     {
         $output = get_class($object);
 
-        return substr($output, strrpos($output, '\\') + 1);
+        if (strpos($output, '\\') != false) {
+            return substr($output, strrpos($output, '\\') + 1);
+        } else {
+            return $output;
+        }
     }
 }

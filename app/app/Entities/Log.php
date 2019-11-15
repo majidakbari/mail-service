@@ -10,10 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Log extends Model
 {
-    /*
-     * This constant is used when non of the SMTP providers could send the email
-     */
-    const NO_PROVIDERS = -1;
 
     /**
      * @var bool
@@ -43,5 +39,19 @@ class Log extends Model
      */
     protected $casts = [
         'email_metadata' => 'json',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $hidden = [
+        'provider'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $appends = [
+        'provider_name'
     ];
 }

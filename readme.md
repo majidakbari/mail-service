@@ -6,11 +6,12 @@ This application is just a standalone micro service which provides REST HTTP end
 * Fully isolated and dockerized application
 * Fail over plan for sending emails
 * Managing queues using `Horizon` and `supervisor`
-* API documentation using `Swagger`
 * Infrastructure level logs(Web server and Supervisor logs)
 * Application level logs (For every single Email)
 * Increased code coverage by writing different unit tests
 * capable of sending `Markdown`, `HTML` and `Text` emails with files attached to them.
+* Powerful error handling
+* Descriptive API documentation powered by Swagger
 
 ## Installation guide
 Follow these steps to simply run the project.
@@ -91,6 +92,11 @@ redis:alpine
 `phpmyadmin`
 phpmyadmin/phpmyadmin
 
+`swagger`
+
+
+## Author
+Majid Akbari [Linkedin](https://linkedin.com/in/majid-akbari)
 
 ## Licence
 [MIT](https://choosealicense.com/licenses/mit/)

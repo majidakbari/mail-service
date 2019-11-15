@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Entities\Log;
 use App\Exceptions\NoMailProviderCouldSendEmailException;
-use App\Interfaces\LogRepositoryInterface;
 use App\Services\LogService;
 use App\Services\MailService;
 use App\ValueObjects\Email;
@@ -76,7 +75,7 @@ class SendSingleEmailJob implements ShouldQueue
     public function handle(LogService $logService): void
     {
         if (is_null($mailProvider = $this->getProvider())) {
-            $logService->fail($this->getEmail(), Log::NO_PROVIDERS, trans('app.no_provider_could_send_email'));
+            $logService->fail($this->getEmail(), MailProvider::NO_PROVIDERS, trans('app.no_provider_could_send_email'));
 
             throw new NoMailProviderCouldSendEmailException();
         }

@@ -58,6 +58,7 @@ class Handler extends ExceptionHandler
         UnauthorizedException::class,
         SymfonyHttpException::class,
         ThrottleRequestsException::class,
+        Exception::class
     ];
 
     /**
@@ -144,6 +145,7 @@ class Handler extends ExceptionHandler
                 $statusCode = HTTPResponse::HTTP_INTERNAL_SERVER_ERROR;
                 $msg = 'Error';
         }
+
 
         return APIResponse::error(
             get_class_name($e),
