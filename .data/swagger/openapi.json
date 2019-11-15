@@ -65,6 +65,20 @@
             "description": "Success",
             "content": {}
           },
+          "413": {
+            "description": "The request body is too large ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostTooLargeException"
+                },
+                "example": {
+                  "error": "PostTooLargeException",
+                  "message": "Request body is to large"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
@@ -241,7 +255,7 @@
           },
           "fromAddress": {
             "type": "string",
-            "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's DMARC policy",
+            "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's `DMARC` policy",
             "example" : "support@sendgrid.com"
           },
           "attachFileCode": {
@@ -433,6 +447,25 @@
           "message": {
             "type": "string",
             "default": "This application only supports json response",
+            "description": "descriptive message of the error",
+            "readOnly": true
+          }
+        }
+      },
+      "PostTooLargeException": {
+        "description": "The request body is too large - 413",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "PostTooLargeException",
+            "description": "Unique key for specifying the error",
+            "readOnly": true
+          },
+          "message": {
+            "type": "string",
+            "default": "Request body is to large",
             "description": "descriptive message of the error",
             "readOnly": true
           }
