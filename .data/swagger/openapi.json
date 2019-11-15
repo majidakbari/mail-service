@@ -187,21 +187,126 @@
         "tags": [
           "Get logs"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "Content-type",
+            "in": "header",
+            "description": "Response content type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Target email address for getting its logs",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "majidakbariiii@gmail.com"
+            }
+          }
+        ],
         "description": "By this endpoint you can search for logs of email sending based on an email address",
         "operationId": "LogSearch",
         "responses": {
           "200": {
-            "description": "All users",
+            "description": "Success",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginationResponse"
+                }
               }
             }
           },
-          "default": {
-            "description": "unexpected error",
+          "413": {
+            "description": "The request body is too large ",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostTooLargeException"
+                },
+                "example": {
+                  "error": "PostTooLargeException",
+                  "message": "Request body is to large"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThrottleRequestsException"
+                },
+                "example": {
+                  "error": "ThrottleRequestsException",
+                  "message": "Too many attempts"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationException"
+                },
+                "example": {
+                  "error": "ValidationException",
+                  "message": {
+                    "to": [
+                      "The to field is required."
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MethodNotAllowedHttpException"
+                },
+                "example": {
+                  "error": "MethodNotAllowedHttpException",
+                  "message": "Http method is invalid"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Invalid accept header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAcceptHeaderException"
+                },
+                "example": {
+                  "error": "InvalidAcceptHeaderException",
+                  "message": "This application only supports json response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralException"
+                },
+                "example": {
+                  "error": "Exception",
+                  "message": "Error"
+                }
               }
             }
           }
@@ -379,6 +484,95 @@
             "type": "string",
             "example": "2019-11-09 12:00:00",
             "description": "When this property is filled, it means that the email was not sent and some error occurred"
+          }
+        }
+      },
+      "PaginationResponse": {
+        "description": "The pagination object",
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "current_page": {
+            "type": "number",
+            "description": "Specifies the current page number",
+            "readOnly": true,
+            "example": 1
+          },
+          "data" : {
+            "type": "array",
+            "description": "Data inside the pagination data",
+            "readOnly": true,
+            "items": {
+              "properties": {
+                "object" : {
+                }
+              }
+            },
+            "example": [
+              {
+                "id": 57,
+                "name" : "something"
+              }
+            ]
+          },
+          "first_page_url" : {
+            "type": "string",
+            "description": "URL of the first page",
+            "readOnly": true,
+            "example": "http://localhost:9090/api/log?page=1"
+          },
+          "from": {
+            "type": "number",
+            "description": "Specifies the range of data",
+            "readOnly": true,
+            "example": 1
+          },
+          "last_page": {
+            "type": "number",
+            "description": "Specifies the last page number",
+            "readOnly": true,
+            "example": 10
+          },
+          "last_page_url" : {
+            "type": "string",
+            "description": "URL of the last page",
+            "readOnly": true,
+            "example": "http://localhost:9090/api/log?page=10"
+          },
+          "next_page_url" : {
+            "type": "string",
+            "description": "URL of the next page",
+            "readOnly": true,
+            "example": "http://localhost:9090/api/log?page=2"
+          },
+          "path" : {
+            "type": "string",
+            "description": "Specifies the page URL",
+            "readOnly": true,
+            "example": "http://localhost:9090/api/log"
+          },
+          "per_page": {
+            "type": "number",
+            "description": "Specifies the number of records in each page",
+            "readOnly": true,
+            "example": 10
+          },
+          "prev_page_url" : {
+            "type": "string",
+            "description": "URL of the previous page",
+            "readOnly": true,
+            "nullable": true,
+            "example": null
+          },
+          "to": {
+            "type": "number",
+            "description": "Specifies the range of data",
+            "readOnly": true
+          },
+          "total": {
+            "type": "number",
+            "description": "Specifies the total number of records",
+            "readOnly": true
           }
         }
       },
