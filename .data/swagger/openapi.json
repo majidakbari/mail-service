@@ -29,8 +29,8 @@
           {
             "name": "Content-type",
             "in": "header",
-            "description": "Response content type",
-            "required": true,
+            "description": "Request content type",
+            "required": false,
             "schema": {
               "type": "string",
               "example": "application/json"
@@ -159,23 +159,141 @@
     "/api/email/multiple": {
       "post": {
         "tags": [
-          "Sending multiple emails"
+          "Sending multiple emails to different recipients"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "Content-type",
+            "in": "header",
+            "description": "Request content type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "Response content type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Array of Email objects",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data" : {
+                    "type": "array",
+                    "items": {
+                      "$ref" : "#/components/schemas/Email"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "description": "It will push all the emails into the application queue and they will be sent as soon as possible",
         "operationId": "MultipleEmails",
         "responses": {
-          "200": {
-            "description": "All users",
+          "204": {
+            "description": "Success",
+            "content": {}
+          },
+          "413": {
+            "description": "The request body is too large ",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostTooLargeException"
+                },
+                "example": {
+                  "error": "PostTooLargeException",
+                  "message": "Request body is to large"
+                }
               }
             }
           },
-          "default": {
-            "description": "unexpected error",
+          "429": {
+            "description": "Too many requests",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThrottleRequestsException"
+                },
+                "example": {
+                  "error": "ThrottleRequestsException",
+                  "message": "Too many attempts"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationException"
+                },
+                "example": {
+                  "error": "ValidationException",
+                  "message": {
+                    "to": [
+                      "The to field is required."
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MethodNotAllowedHttpException"
+                },
+                "example": {
+                  "error": "MethodNotAllowedHttpException",
+                  "message": "Http method is invalid"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Invalid accept header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidAcceptHeaderException"
+                },
+                "example": {
+                  "error": "InvalidAcceptHeaderException",
+                  "message": "This application only supports json response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralException"
+                },
+                "example": {
+                  "error": "Exception",
+                  "message": "Error"
+                }
               }
             }
           }
@@ -335,17 +453,20 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["majidakbariiii@gmail.com", "majid.akbari@devolon.fi"]
+            "example": [
+              "majidakbariiii@gmail.com",
+              "majid.akbari@devolon.fi"
+            ]
           },
           "subject": {
             "type": "string",
             "description": "The email subject",
-            "example" : "Sample email subject"
+            "example": "Sample email subject"
           },
           "body": {
             "type": "string",
             "description": "Email body, it can hold `HTML` data, `markdown` or `plaintext` data",
-            "example" : "Hello, is it me you looking for? :-D"
+            "example": "Hello, is it me you looking for? :-D"
           },
           "bodyType": {
             "type": "string",
@@ -355,17 +476,17 @@
               "text/plain",
               "text/markdown"
             ],
-            "example" : "text/plain"
+            "example": "text/plain"
           },
           "fromName": {
             "type": "string",
             "description": "The sender name in the email",
-            "example" : "Majid Akbari"
+            "example": "Majid Akbari"
           },
           "fromAddress": {
             "type": "string",
             "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's `DMARC` policy",
-            "example" : "majid@akbari.com"
+            "example": "majid@akbari.com"
           },
           "attachFileCode": {
             "type": "string",
@@ -385,7 +506,9 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["majid.akbari@devolon.fi"]
+            "example": [
+              "majid.akbari@devolon.fi"
+            ]
           },
           "bcc": {
             "type": "array",
@@ -393,7 +516,9 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["majid.akbari@devolon.fi"]
+            "example": [
+              "majid.akbari@devolon.fi"
+            ]
           }
         }
       },
@@ -498,24 +623,24 @@
             "readOnly": true,
             "example": 1
           },
-          "data" : {
+          "data": {
             "type": "array",
             "description": "Data inside the pagination data",
             "readOnly": true,
             "items": {
               "properties": {
-                "object" : {
+                "object": {
                 }
               }
             },
             "example": [
               {
                 "id": 57,
-                "name" : "something"
+                "name": "something"
               }
             ]
           },
-          "first_page_url" : {
+          "first_page_url": {
             "type": "string",
             "description": "URL of the first page",
             "readOnly": true,
@@ -533,19 +658,19 @@
             "readOnly": true,
             "example": 10
           },
-          "last_page_url" : {
+          "last_page_url": {
             "type": "string",
             "description": "URL of the last page",
             "readOnly": true,
             "example": "http://localhost:9090/api/log?page=10"
           },
-          "next_page_url" : {
+          "next_page_url": {
             "type": "string",
             "description": "URL of the next page",
             "readOnly": true,
             "example": "http://localhost:9090/api/log?page=2"
           },
-          "path" : {
+          "path": {
             "type": "string",
             "description": "Specifies the page URL",
             "readOnly": true,
@@ -557,7 +682,7 @@
             "readOnly": true,
             "example": 10
           },
-          "prev_page_url" : {
+          "prev_page_url": {
             "type": "string",
             "description": "URL of the previous page",
             "readOnly": true,
@@ -685,7 +810,7 @@
           "message": {
             "type": "object",
             "properties": {
-              "mandatory_fields" : {
+              "mandatory_fields": {
                 "description": "They may be different based on the request rules"
               }
             },
