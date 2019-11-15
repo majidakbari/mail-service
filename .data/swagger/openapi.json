@@ -224,9 +224,13 @@
         ],
         "properties": {
           "to": {
-            "type": "string",
-            "description": "The email recipient (a valid email address)",
-            "example" : "majidakbariiii@gmail.com"
+            "type": "array",
+            "description": "Array of recipients",
+            "items": {
+              "type": "string",
+              "description": "A valid email address"
+            },
+            "example" : ["majidakbariiii@gmail.com", "m.akbari@devolon.fi"]
           },
           "subject": {
             "type": "string",
@@ -256,7 +260,7 @@
           "fromAddress": {
             "type": "string",
             "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's `DMARC` policy",
-            "example" : "support@sendgrid.com"
+            "example" : "majid@akbari.com"
           },
           "attachFileCode": {
             "type": "string",

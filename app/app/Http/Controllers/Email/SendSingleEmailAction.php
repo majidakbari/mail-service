@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Email;
 
 use App\Http\Requests\Email\SendSingleEmailRequest;
-use App\Jobs\SendSingleEmailJob;
 use App\Tools\APIResponse;
-use App\ValueObjects\Email;
+use App\Traits\MakeEmailJobTrait;
 use App\ValueObjects\QueueManager;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class SendSingleEmailAction
 {
+    use MakeEmailJobTrait;
+
     /**
      * @var Queue
      */
@@ -47,11 +48,7 @@ class SendSingleEmailAction
      */
     private function push(array $data)
     {
-        $jobs = [];
-        foreach ($data['to'] as $email) {
-            $data['to'] = $email;
-            $jobs[] = new SendSingleEmailJob(Email::fromArray($data));
-        }
+        $jobs = $this->makeJobFromArray($data);
 
         $this->queueFactory->bulk($jobs, [], QueueManager::BULK_EMAIL_QUEUE);
     }

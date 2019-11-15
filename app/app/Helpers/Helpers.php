@@ -28,3 +28,4 @@ if (!function_exists('get_paginate_params')) {
         return [(int)$perPage, (int)$page];
     }
 }
+
