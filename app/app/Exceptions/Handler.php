@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,7 +59,8 @@ class Handler extends ExceptionHandler
         UnauthorizedException::class,
         SymfonyHttpException::class,
         ThrottleRequestsException::class,
-        Exception::class
+        Exception::class,
+        PostTooLargeException::class
     ];
 
     /**
@@ -140,6 +142,9 @@ class Handler extends ExceptionHandler
                 break;
             case ThrottleRequestsException::class:
                 $statusCode = HTTPResponse::HTTP_TOO_MANY_REQUESTS;
+                break;
+            case PostTooLargeException::class:
+                $statusCode = HTTPResponse::HTTP_REQUEST_ENTITY_TOO_LARGE;
                 break;
             default:
                 $statusCode = HTTPResponse::HTTP_INTERNAL_SERVER_ERROR;
