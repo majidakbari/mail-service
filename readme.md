@@ -77,7 +77,7 @@ Navigate to the following address to see DB structure.
 ### Tests
 To run tests, in the terminal type the following command:
 ```bash
-docker-compose exec backend vendor/bin/phpunit
+docker-compose exec app vendor/bin/phpunit
 ```
 
 
