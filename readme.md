@@ -75,7 +75,7 @@ You can simply send emails through the command line, just type the command below
 ```bash
 docker-compose exec app php artisan email:send
 ```
-You will be prompted for the inputs.
+You will be prompted for entering the inputs.
 
 ### Database management
 If you want to browse the database manually, you can use `phpmyadmin` container which is installed on this project, because it is common and easy to use.
