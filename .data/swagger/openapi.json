@@ -230,7 +230,7 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["majidakbariiii@gmail.com", "m.akbari@devolon.fi"]
+            "example" : ["majidakbariiii@gmail.com", "majid.akbari@devolon.fi"]
           },
           "subject": {
             "type": "string",
@@ -264,13 +264,15 @@
           },
           "attachFileCode": {
             "type": "string",
-            "description": "Base64 encoded of the file you want to attach to the email",
-            "example" : ""
+            "nullable": true,
+            "example": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+            "description": "Base64 encoded of the file you want to attach to the email"
           },
           "attachFileName": {
             "type": "string",
-            "description": "Name of the file that you want to attach to the email",
-            "example" : ""
+            "nullable": true,
+            "example": "myFile.png",
+            "description": "Name of the file that you want to attach to the email"
           },
           "cc": {
             "type": "array",
@@ -278,7 +280,7 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["m.akbari@devolon.fi"]
+            "example" : ["majid.akbari@devolon.fi"]
           },
           "bcc": {
             "type": "array",
@@ -286,7 +288,7 @@
               "type": "string",
               "description": "A valid email address"
             },
-            "example" : ["m.akbari@devolon.fi"]
+            "example" : ["majid.akbari@devolon.fi"]
           }
         }
       },
