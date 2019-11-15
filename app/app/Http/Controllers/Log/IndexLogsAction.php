@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Log;
 
 use App\Http\Requests\Log\IndexLogsRequest;
 use App\Interfaces\LogRepositoryInterface;
+use App\Tools\APIResponse;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Class IndexLogsAction
@@ -25,10 +27,24 @@ class IndexLogsAction
         $this->logRepository = $logRepository;
     }
 
-    public function __invoke(IndexLogsRequest $request)
+    /**
+     * @param IndexLogsRequest $request
+     * @return JsonResponse
+     */
+    public function __invoke(IndexLogsRequest $request): JsonResponse
     {
-        dd($request);
-        // TODO: Implement __invoke() method.
-    }
+        list($perPage, $page) = get_paginate_params(
+            $request->get('perPage'),
+            $request->get('page')
+        );
 
+        $result = $this->logRepository->findManyLogsByEmailAndDate(
+            $request->get('email'),
+            $request->get('fromDate'),
+            $request->get('toDate'),
+            $perPage, $page
+        );
+
+        return APIResponse::success($result);
+    }
 }

@@ -29,8 +29,8 @@ class IndexLogsRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'from_date' => 'nullable|date:Y-m-d',
-            'to_date' => 'nullable|date:Y-m-d',
+            'fromDate' => 'nullable|date:Y-m-d',
+            'toDate' => 'nullable|date:Y-m-d',
         ];
     }
 }

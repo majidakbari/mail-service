@@ -12,3 +12,19 @@ if (!function_exists('get_class_name')) {
         }
     }
 }
+
+
+if (!function_exists('get_paginate_params')) {
+
+    function get_paginate_params($perPage, $page)
+    {
+        if (empty($perPage) || is_array($perPage) || is_object($perPage) || intval($perPage) < 0 || intval($perPage) > 100) {
+            $perPage = 10;
+        }
+        if (empty($page) || is_array($page) || is_object($page) || (intval($page) < 0)) {
+            $page = 1;
+        }
+
+        return [(int)$perPage, (int)$page];
+    }
+}

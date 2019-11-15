@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Entities\Log;
 use App\Interfaces\LogRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class MySQLLogRepository
@@ -17,5 +18,34 @@ class MySQLLogRepository extends MySQLAbstractRepository implements LogRepositor
     public function __construct()
     {
         parent::__construct(new Log());
+    }
+
+    /**
+     * @param $to
+     * @param null|string $fromDate
+     * @param null|string $toDate
+     * @param int $perPage
+     * @param int $page
+     * @return LengthAwarePaginator
+     */
+    public function findManyLogsByEmailAndDate(
+        $to,
+        $fromDate = null,
+        $toDate = null,
+        $perPage = 10,
+        $page = 1
+    ): LengthAwarePaginator {
+        $query = $this->entityClass->query()->where('to', $to);
+
+        if ($fromDate) {
+            $query->whereDate('sent_at', '>=', $fromDate)
+                ->orWhereDate('failed_at', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $query->whereDate('sent_at', '<=', $toDate)
+                ->orWhereDate('failed_at', '<=', $toDate);
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 }
