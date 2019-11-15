@@ -67,7 +67,7 @@ This application uses laravel built in feature for queueing emails. Redis in-mem
 `{{backend_address}}/horizon` (default equals to http://localhost:9090/horizon)
 ### API Documentation
 Models and endpoints are fully specified using swagger openApi.
-Simply navigate to `{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see what API documentation.
+Simply navigate to `{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see API documentation.
 
 ### Database management
 If you want to manually browse the database you can use `phpmyadmin` container which is installed on this project because it is common and popular.
