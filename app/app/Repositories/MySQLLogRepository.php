@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Entities\Log;
 use App\Interfaces\LogRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class MySQLLogRepository
@@ -38,12 +39,16 @@ class MySQLLogRepository extends MySQLAbstractRepository implements LogRepositor
         $query = $this->entityClass->query()->where('to', $to);
 
         if ($fromDate) {
-            $query->whereDate('sent_at', '>=', $fromDate)
-                ->orWhereDate('failed_at', '>=', $fromDate);
+            $query->where(function (Builder $q) use ($fromDate) {
+                $q->whereDate('sent_at', '>=', $fromDate)
+                    ->orWhereDate('failed_at', '>=', $fromDate);
+            });
         }
         if ($toDate) {
-            $query->whereDate('sent_at', '<=', $toDate)
-                ->orWhereDate('failed_at', '<=', $toDate);
+            $query->where(function (Builder $q) use ($toDate) {
+                $q->whereDate('sent_at', '<=', $toDate)
+                    ->orWhereDate('failed_at', '<=', $toDate);
+            });
         }
 
         return $query->paginate($perPage, ['*'], 'page', $page);

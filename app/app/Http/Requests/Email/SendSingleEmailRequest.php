@@ -32,7 +32,7 @@ class SendSingleEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'to' => 'required|array',
+            'to' => 'required|email',
             'subject' => 'required|string',
             'body' => 'required|string',
             'bodyType' => ['required', Rule::in(Email::getValidBodyTypes())],
