@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Email;
 
 /**
  * Class SendMultipleEmailRequest
- * @package App\Http\Requests
+ * @package App\Http\Requests\Email
  */
 class SendMultipleEmailRequest extends SendSingleEmailRequest
 {

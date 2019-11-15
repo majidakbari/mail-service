@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Email;
 
 use App\Rules\Base64Validator;
 use App\ValueObjects\Email;
@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * Class SendSingleEmailRequest
- * @package App\Http\Requests
+ * @package App\Http\Requests\Email
  */
 class SendSingleEmailRequest extends FormRequest
 {

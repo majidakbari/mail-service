@@ -43,7 +43,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:1,1',
+            'throttle:600,1',
             OnlyJsonResponseMiddleware::class,
             'bindings',
         ],

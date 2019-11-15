@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Email;
 
-use App\Http\Requests\SendMultipleEmailRequest;
+use App\Http\Requests\Email\SendMultipleEmailRequest;
 use App\Jobs\SendSingleEmailJob;
 use App\Tools\APIResponse;
 use App\ValueObjects\Email;
 use App\ValueObjects\QueueManager;
-use http\Exception;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +39,6 @@ class SendMultipleEmailAction
      */
     public function __invoke(SendMultipleEmailRequest $request): JsonResponse
     {
-        throw new \Exception;
         $this->push($request->all());
 
         return APIResponse::success(null, Response::HTTP_NO_CONTENT);
