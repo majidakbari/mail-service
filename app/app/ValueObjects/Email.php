@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 /**
  * Class Email
- * @property array $to
+ * @property string $to
  * @property string $fromAddress
  * @property string $fromName
  * @property string $subject

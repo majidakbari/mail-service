@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Email;
 
-use App\Http\Requests\SendSingleEmailRequest;
+use App\Http\Requests\Email\SendSingleEmailRequest;
 use App\Jobs\SendSingleEmailJob;
 use App\Tools\APIResponse;
 use App\ValueObjects\Email;
