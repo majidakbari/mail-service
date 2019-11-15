@@ -51,6 +51,6 @@ class MySQLLogRepository extends MySQLAbstractRepository implements LogRepositor
             });
         }
 
-        return $query->paginate($perPage, ['*'], 'page', $page);
+        return $query->orderBy('id', 'DESC')->paginate($perPage, ['*'], 'page', $page);
     }
 }
