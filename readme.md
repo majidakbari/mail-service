@@ -8,7 +8,7 @@ This application is just a standalone micro service which provides REST HTTP end
 * Managing queues using `Horizon` and `supervisor`
 * Infrastructure level logs(Web server and Supervisor logs)
 * Application level logs (For every single Email)
-* Increased code coverage by writing different unit tests
+* Increased code coverage by writing different unit, functional and feature tests
 * capable of sending `Markdown`, `HTML` and `Text` emails with files attached to them.
 * Powerful error handling
 * Descriptive API documentation powered by Swagger
@@ -23,7 +23,7 @@ git clone git@github.com:majidakbari/mail-service.git
 ```
 
 ### Environment variables
-There is a `.env.example` file in the root of the project which contains infrastructure env variables that are used for deploying the project.
+There is a `.env.example` file in the root of the project which contains infrastructure level environment variables that are used for deploying the project.
 Every single variable inside this file, has a default value, so you do not need to change them; But you can also override your own variables.
 ```bash
 cd /path-to-project
@@ -47,29 +47,34 @@ It will install the dependencies, creates .env laravel file, generates the appli
 ```bash
 docker-compose exec --user www-data app bootup
 ```
-## Redundancy in sending emails
+## Features descriptions 
+
+### Redundancy in sending emails
 Under the `config/mail.php` directory of the application, under `providers` key, you can add as many as Email(SMTP Relay) providers you want. They are used for sending emails. The first email provider is the default provider, if it wasn't able to send the mail, the second provider would take care of that email and so on. If none of the providers could send the email then just by adding a log record which indicates the situation, the email will be cleared from the queue. 
 
-## Logs
-In this application there are two levels of logs, you can figure out more in the following topics:
+### Logs
+In this application there are two levels of logs, you can figure out more in the following sections:
 
-### Infrastructure level logs
-In the root of the project, there is `.data` directory which is used to store logs (and also for saving database data). You can use your preferred logging tool like `ELK` and etc to manage them.
+#### Infrastructure level logs
+In the root of the project, there is `.data` directory which is used to store logs (and also used for some other purposes). You can use your preferred logging tool like `ELK` and etc to manage them.
 Under the `.data/app/log` directory there are two different directories. The first one is `supervisor` which shows supervisor and horizon logs and the second one is `webserver` which holds apache server `access` and `error` logs.
 
-### Application level logs
-In the database which will be automatically created, there is a table which its name is `logs`. It shows all `successful` and `failed` emails. And also you can find the failure reason. 
+#### Application level logs
+In the database which will be automatically created, there is a table which is named `logs`. It shows all `successful` and `failed` emails. And also you can find out the failure reason. 
 
-## Horizon and managing queues
-This application uses laravel built in feature for queueing emails. Supervisor process manager and Horizon are responsible for consuming these queue records. You can simply monitor your queues on the following address. 
-`{{backend_address}}/horizon`
-## API Documentation
-In the root of the project there is a postman collection which contains the API doc.
-Also you can find the API documentation on the following address.
+### Horizon and managing queues
+This application uses laravel built in feature for queueing emails. Redis in-memory database is used as queue driver and Supervisor process manager and Horizon are responsible for consuming these queue records. You can simply monitor your queues on the following address. 
+`{{backend_address}}/horizon` (default equals to http://localhost:9090/horizon)
+### API Documentation
+Models and endpoints are fully specified using swagger openApi.
+Simply navigate to `{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see what API documentation.
 
-[API Documentation]()
+### Database management
+If you want to manually browse the database you can use `phpmyadmin` container which is installed on this project because it is common and popular.
+Navigate to the following address to see DB structure.
+`{{PMA_ADDRESS}}` (default equals to http://localhost:9092)
 
-## Tests
+### Tests
 To run tests, in the terminal type the following command:
 ```bash
 docker-compose exec backend vendor/bin/phpunit
@@ -93,7 +98,7 @@ redis:alpine
 phpmyadmin/phpmyadmin
 
 `swagger`
-
+swaggerapi/swagger-ui
 
 ## Author
 Majid Akbari [Linkedin](https://linkedin.com/in/majid-akbari)
