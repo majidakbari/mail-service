@@ -34,7 +34,7 @@ class SendSingleEmailRequest extends FormRequest
         return [
             'to' => 'required|array|min:1|max:100',
             'to.*' => 'required|email',
-            'subject' => 'required|string',
+            'subject' => 'required|string|max:255',
             'body' => 'required|string',
             'bodyType' => ['required', Rule::in(Email::getValidBodyTypes())],
             'attachFileCode' => ['nullable', new Base64Validator()],

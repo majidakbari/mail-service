@@ -12,6 +12,7 @@ This application is just a standalone micro service which provides REST HTTP end
 * capable of sending `Markdown`, `HTML` and `Text` emails with files attached to them.
 * Powerful error handling
 * Descriptive API documentation powered by Swagger
+* Command line interface for sending emails
 
 ## Installation guide
 Follow these steps to simply run the project.
@@ -68,6 +69,13 @@ This application uses laravel built in feature for queueing emails. `Redis` in-m
 ### API Documentation
 Models and endpoints are fully specified using swagger openApi.
 Simply navigate to `localhost:{{SWAGGER_ADDRESS}}` (default equals to http://localhost:9093) on your host to see API documentation.
+
+### Command line interface
+You can simply send emails through the command line, just type the command below into the Terminal
+```bash
+docker-compose exec app php artisan email:send
+```
+You will be prompted for the inputs.
 
 ### Database management
 If you want to browse the database manually, you can use `phpmyadmin` container which is installed on this project, because it is common and easy to use.
