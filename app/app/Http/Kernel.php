@@ -46,6 +46,7 @@ class Kernel extends HttpKernel
             'throttle:600,1',
             OnlyJsonResponseMiddleware::class,
             'bindings',
+            \Barryvdh\Cors\HandleCors::class,
         ],
     ];
 

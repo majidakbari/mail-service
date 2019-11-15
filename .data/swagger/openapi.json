@@ -27,6 +27,16 @@
         ],
         "parameters": [
           {
+            "name": "Content-type",
+            "in": "header",
+            "description": "Response content type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
             "name": "Accept",
             "in": "header",
             "description": "Response content type",
@@ -37,6 +47,17 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Email object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Email"
+              }
+            }
+          }
+        },
         "description": "It Will push the email into the application queue and it will be sent as soon as possible",
         "operationId": "SingleEmail",
         "responses": {
@@ -190,15 +211,18 @@
         "properties": {
           "to": {
             "type": "string",
-            "description": "The email recipient (a valid email address)"
+            "description": "The email recipient (a valid email address)",
+            "example" : "majidakbariiii@gmail.com"
           },
           "subject": {
             "type": "string",
-            "description": "The email subject"
+            "description": "The email subject",
+            "example" : "Sample email subject"
           },
           "body": {
             "type": "string",
-            "description": "Email body, it can hold `HTML` data, `markdown` or `plaintext` data"
+            "description": "Email body, it can hold `HTML` data, `markdown` or `plaintext` data",
+            "example" : "Hello, is it me you looking for? :-D"
           },
           "bodyType": {
             "type": "string",
@@ -207,37 +231,44 @@
               "text/html",
               "text/plain",
               "text/markdown"
-            ]
+            ],
+            "example" : "text/plain"
           },
           "fromName": {
             "type": "string",
-            "description": "The sender name in the email"
+            "description": "The sender name in the email",
+            "example" : "Majid Akbari"
           },
           "fromAddress": {
             "type": "string",
-            "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's DMARC policy"
+            "description": "The sender email address, remember that you can not use any email address as FromAddress property of the email due to domain's DMARC policy",
+            "example" : "support@sendgrid.com"
           },
           "attachFileCode": {
             "type": "string",
-            "description": "Base64 encoded of the file you want to attach to the email"
+            "description": "Base64 encoded of the file you want to attach to the email",
+            "example" : ""
           },
           "attachFileName": {
             "type": "string",
-            "description": "Name of the file that you want to attach to the email"
+            "description": "Name of the file that you want to attach to the email",
+            "example" : ""
           },
           "cc": {
             "type": "array",
             "items": {
               "type": "string",
               "description": "A valid email address"
-            }
+            },
+            "example" : ["m.akbari@devolon.fi"]
           },
           "bcc": {
             "type": "array",
             "items": {
               "type": "string",
               "description": "A valid email address"
-            }
+            },
+            "example" : ["m.akbari@devolon.fi"]
           }
         }
       },

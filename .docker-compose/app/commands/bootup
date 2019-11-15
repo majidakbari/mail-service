@@ -22,7 +22,7 @@ printf "\033[0;32m > composer install ...\n"
 
 
 printf "\033[0;32m > Generating app key ...\n"
-(cd /var/www/ && php artisan key:generate)
+(cd /var/www/ && php artisan key:generate --force)
 
-printf "\033[0;32m > Creating new password client ...\n"
-(cd /var/www/ && php artisan passport:client --password --name web)
+printf "\033[0;32m > Migrating the database"
+(cd /var/www/ && php artisan migrate --force)
