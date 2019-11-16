@@ -80,7 +80,15 @@ class SendSingleEmailJob implements ShouldQueue
             throw new NoMailProviderCouldSendEmailException();
         }
 
-        (new MailService($mailProvider))->send($this->getEmail());
+        /**
+         * @var MailService $mailService
+         * We need to resolve objects from the container instead of instantiating them manually
+         * In this case we can simply mock them in the test environment and also it is easy to change the code if
+         * something changes in the core of MailService class
+         */
+        $mailService = resolve(MailService::class, ['mailProvider' => $mailProvider]);
+
+        $mailService->send($this->getEmail());
 
         $logService->success($this->getEmail(), $mailProvider->getId());
     }

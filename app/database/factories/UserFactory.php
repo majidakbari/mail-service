@@ -1,8 +1,48 @@
 <?php
 
+/**
+ * Class EmailFactory
+ */
+class EmailFactory
+{
+    /**
+     * @var Faker
+     */
+    private $faker;
+
+    /**
+     * EmailFactory constructor.
+     * @param Faker $faker
+     */
+    public function __construct(Faker $faker)
+    {
+        $this->faker = $faker;
+    }
+
+    public function make()
+    {
+        return \App\ValueObjects\Email::fromArray();
+    }
+}
+
+//
+//class EmailFactory
+//    /**
+//     * @var Faker
+//     */
+//    private $faker;
+//
+//    /**
+//     * EmailFactory constructor.
+//     * @param Faker $faker
+//     */
+//    public function __construct(array $data)
+//    {
+//
+//    }
+//}
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-use App\User;
-use Illuminate\Support\Str;
+
 use Faker\Generator as Faker;
 
 /*
@@ -16,12 +56,21 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(\App\ValueObjects\Email::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
+        "to" => "majidakbariiii@gmail.com",
+        "subject" => "Sample email subject",
+        "body" => "Hello, is it me you looking for? =>-D",
+        "bodyType" => "text/markdown",
+        "fromName" => "Majid Akbari",
+        "fromAddress" => "majid@akbari.com",
+        "cc" => [
+            "majid.akbari@devolon.fi"
+        ],
+        "bcc" => [
+            "majid.akbari@devolon.fi"
+        ]
     ];
 });
+
+

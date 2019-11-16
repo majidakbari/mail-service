@@ -95,10 +95,14 @@ class MailService
     private function prepareMessage(Email $email): Swift_Message
     {
         if ($email->isMarkDown()) {
-            $email->setBody((new MarkdownToHTMLService())->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);
+            /** @var MarkdownToHTMLService $markdownConverterService */
+            $markdownConverterService = resolve(MarkdownToHTMLService::class);
+            $email->setBody($markdownConverterService->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);
         }
+        /** @var Swift_Message $swiftMessage */
+        $swiftMessage = resolve(Swift_Message::class);
 
-        $message = (new Swift_Message())
+        $message = $swiftMessage
             ->setSubject($email->getSubject())
             ->setFrom($email->getFromAddress(), $email->getFromName())
             ->setTo($email->getTo())
@@ -107,7 +111,8 @@ class MailService
             ->setBcc($email->getBcc());
 
         if ($file = $email->getAttachFileCode()) {
-            $fileHelper = new FileHelper($file);
+            /** @var FileHelper $fileHelper */
+            $fileHelper = resolve(FileHelper::class, ['base64Code' => $file]);
             $message->attach(Swift_Attachment::fromPath($fileHelper->getFileAddress(),
                 $fileHelper->getMimeType())->setFilename($email->getAttachFileName())
             );
