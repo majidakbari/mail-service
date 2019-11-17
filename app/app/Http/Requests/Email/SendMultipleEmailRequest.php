@@ -29,7 +29,7 @@ class SendMultipleEmailRequest extends FormRequest
             'data.*.body' => 'required|string',
             'data.*.bodyType' => ['required', Rule::in(Email::getValidBodyTypes())],
             'data.*.attachFileCode' => ['nullable', new Base64Validator()],
-            'data.*.attachFileName' => 'required_with:attachFileCode|string|max:100',
+            'data.*.attachFileName' => 'required_with:attachFileCode|max:100',
             'data.*.cc' => 'nullable|array',
             'data.*.cc.*' => 'nullable|email',
             'data.*.bcc' => 'nullable|array',

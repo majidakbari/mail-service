@@ -50,6 +50,6 @@ class SendSingleEmailAction
     {
         $jobs = $this->makeJobFromArray($data);
 
-        $this->queueFactory->bulk($jobs, [], QueueManager::BULK_EMAIL_QUEUE);
+        $this->queueFactory->bulk($jobs, [], QueueManager::SINGLE_EMAIL_QUEUE);
     }
 }

@@ -145,7 +145,8 @@ class FileHelper
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'text/css',
             'text/html',
-            'text/html'
+            'text/html',
+            'text/plain'
         ];
     }
 

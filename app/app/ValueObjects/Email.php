@@ -100,8 +100,8 @@ class Email
         $this->bodyType = $bodyType;
         $this->attachFileCode = $attachFileCode;
         $this->attachFileName = $attachFileName;
-        $this->bcc = $bcc;
         $this->cc = $cc;
+        $this->bcc = $bcc;
     }
 
     /**
@@ -243,8 +243,8 @@ class Email
             $data['fromName'] ?? config('mail.from.name'),
             $data['attachFileCode'] ?? '',
             $data['attachFileName'] ?? '',
-            $data['bcc'] ?? [],
-            $data['cc'] ?? []
+            $data['cc'] ?? [],
+            $data['bcc'] ?? []
         );
     }
 
@@ -281,6 +281,26 @@ class Email
             'attachment' => !empty($this->getAttachFileCode()),
             'cc' => $this->getCc(),
             'bcc' => $this->getBcc(),
+        ];
+    }
+
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'to' => [$this->getTo()],
+            'subject' => $this->getSubject(),
+            'body' => $this->getBody(),
+            'bodyType' => $this->getBodyType(),
+            'fromAddress' => $this->getFromAddress(),
+            'fromName' => $this->getFromName(),
+            'attachFileCode' => $this->getAttachFileCode(),
+            'attachFileName' => $this->getAttachFileName(),
+            'bcc' => $this->getBcc(),
+            'cc' => $this->getCc()
         ];
     }
 }
