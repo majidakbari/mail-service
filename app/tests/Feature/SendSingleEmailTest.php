@@ -51,7 +51,7 @@ class SendSingleEmailTest extends TestCase
      * @dataProvider emailDataProvider
      * @group FeatureSendSingleEmail
      */
-    public function testSuccess(Email $email)
+    public function testSuccess(Email $email): void
     {
         $response = $this->json('post', route('email.send.single', [], false), $email->toArray());
 
@@ -69,13 +69,15 @@ class SendSingleEmailTest extends TestCase
      * @group FeatureSendSingleEmail
      * Validation error test
      */
-    public function validationErrorTest()
+    public function validationErrorTest(): void
     {
         /** @var EmailFactory $emailFactory */
         $emailFactory = resolve(EmailFactory::class);
         $email = $emailFactory->make(EmailFactory::EMAIL_UNCOMPLETED_BODY);
         $response = $this->json('post', route('email.send.single', [], false), $email->toArray());
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        Queue::assertNothingPushed();
+
     }
 
     /**
@@ -84,10 +86,10 @@ class SendSingleEmailTest extends TestCase
      * @group FeatureSendSingleEmail
      * Wrong request headers (Accept header)
      */
-    public function headerNotAcceptableTest()
+    public function headerNotAcceptableTest(): void
     {
         $response = $this->post(route('email.send.single', [], false), []);
-
         $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
+        Queue::assertNothingPushed();
     }
 }

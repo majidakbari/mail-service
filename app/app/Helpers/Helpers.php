@@ -1,5 +1,7 @@
 <?php
 
+use App\ValueObjects\Email;
+
 if (!function_exists('get_class_name')) {
     function get_class_name($object)
     {
@@ -29,3 +31,11 @@ if (!function_exists('get_paginate_params')) {
     }
 }
 
+if (!function_exists('objects_to_array')) {
+    function objects_to_array(array $data)
+    {
+        return array_map(function ($object) {
+            return $object->toArray();
+        }, $data);
+    }
+}

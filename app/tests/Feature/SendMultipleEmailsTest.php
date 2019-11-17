@@ -29,7 +29,7 @@ class SendMultipleEmailsTest extends TestCase
     /**
      * @return array
      */
-    public function emailDataProvider(): array
+    public function emailsDataProvider(): array
     {
         $this->refreshApplication();
 
@@ -37,56 +37,74 @@ class SendMultipleEmailsTest extends TestCase
         $emailFactory = resolve(EmailFactory::class);
 
         return [
-            [$emailFactory->make(EmailFactory::EMAIL_WITH_FILE_ATTACHED)],
-            [$emailFactory->make(EmailFactory::EMAIL_WITH_HTML_BODY)],
-            [$emailFactory->make(EmailFactory::EMAIL_WITH_MARKDOWN_BODY)],
-            [$emailFactory->make(EmailFactory::EMAIL_WITH_TEXT_BODY)],
-            [$emailFactory->make(EmailFactory::EMAIL_WITHOUT_OPTIONAL_PROPERTIES)],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITH_FILE_ATTACHED))],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITH_HTML_BODY))],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITH_MARKDOWN_BODY))],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITH_TEXT_BODY))],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITHOUT_OPTIONAL_PROPERTIES))],
         ];
     }
 
     /**
-     * @test
-     * @param Email $email
-     * @dataProvider emailDataProvider
-     * @group FeatureSendSingleEmail
+     * @return array
      */
-    public function testSuccess(Email $email)
+    public function wrongEmailNumberDataProvider(): array
     {
-        $response = $this->json('post', route('email.send.single', [], false), $email->toArray());
+        $this->refreshApplication();
+
+        /** @var EmailFactory $emailFactory */
+        $emailFactory = resolve(EmailFactory::class);
+
+        return [
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITHOUT_OPTIONAL_PROPERTIES, 101))],
+            [array()],
+        ];
+    }
+
+
+    /**
+     * @test
+     * @param array $emails
+     * @dataProvider emailsDataProvider
+     * @group FeatureSendMultipleEmails
+     */
+    public function testSuccess(array $emails): void
+    {
+        $response = $this->json('post', route('email.send.multiple', [], false), [
+            'data' => $emails
+        ]);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        Queue::assertPushedOn(QueueManager::SINGLE_EMAIL_QUEUE, SendSingleEmailJob::class,
-            function (SendSingleEmailJob $job) use ($email) {
-                return $job->getEmail()->toArray() == $email->toArray();
-            });
+        Queue::assertPushedOn(QueueManager::BULK_EMAIL_QUEUE, SendSingleEmailJob::class);
+        Queue::assertPushed(SendSingleEmailJob::class, count($emails));
     }
 
     /**
      * @test
      * @expectedExceptionCode 422
-     * @group FeatureSendSingleEmail
+     * @group FeatureSendMultipleEmails
+     * @dataProvider wrongEmailNumberDataProvider
      * Validation error test
+     * @param array $data
      */
-    public function validationErrorTest()
+    public function validationErrorTest(array $data)
     {
-        /** @var EmailFactory $emailFactory */
-        $emailFactory = resolve(EmailFactory::class);
-        $email = $emailFactory->make(EmailFactory::EMAIL_UNCOMPLETED_BODY);
-        $response = $this->json('post', route('email.send.single', [], false), $email->toArray());
+        $response = $this->json('post', route('email.send.multiple', [], false), [
+            'data' => $data
+        ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
      * @test
      * @expectedExceptionCode 406
-     * @group FeatureSendSingleEmail
+     * @group FeatureSendMultipleEmails
      * Wrong request headers (Accept header)
      */
     public function headerNotAcceptableTest()
     {
-        $response = $this->post(route('email.send.single', [], false), []);
+        $response = $this->post(route('email.send.multiple', [], false), []);
 
         $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
     }

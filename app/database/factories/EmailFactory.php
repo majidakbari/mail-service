@@ -113,6 +113,25 @@ class EmailFactory
     }
 
     /**
+     * @param $type
+     * @param $numberOfInstances
+     * @return array
+     */
+    public function makeMany($type, $numberOfInstances = null): array
+    {
+        if (is_null($numberOfInstances)) {
+            $numberOfInstances = $this->faker->numberBetween(1, 10) ;
+        }
+
+        $result = [];
+        for ($i = 1; $i <= $numberOfInstances; $i++) {
+            $result[] = $this->make($type);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $bodyType
      * @return string
      */

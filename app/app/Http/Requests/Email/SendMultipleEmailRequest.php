@@ -22,8 +22,8 @@ class SendMultipleEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data' => 'required|array',
-            'data.*.to' => 'required|array|min:1|max:100',
+            'data' => 'required|array|min:1|max:100',
+            'data.*.to' => 'required|array',
             'data.*.to.*' => 'required|email',
             'data.*.subject' => 'required|string|max:255',
             'data.*.body' => 'required|string',
