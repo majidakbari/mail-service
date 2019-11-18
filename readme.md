@@ -25,7 +25,7 @@ git clone git@github.com:majidakbari/mail-service.git
 
 ### Environment variables
 There is a `.env.example` file in the root of the project which contains OS level environment variables that are used for deploying the whole project and also for running the application.
-Every single variable inside of this file, has a default value, so you do not need to change them; But you can also override your own variables. First Copy the example file to the `.env` file:
+Every single variable inside of this file, has a default value, so you do not need to change them; But you can also override your own variables. First copy the example file to the `.env` file:
 ```bash
 cd /path-to-project
 cp .env.example .env
@@ -98,7 +98,7 @@ To run tests, in the terminal type the following command:
 ```bash
 docker-compose exec app vendor/bin/phpunit
 ```
-* Notice: They are some tests that rely on database. It is possible to use `in-memory database` to make sure that the database is empty and clean but it costs a lot. So please make sure that the database (`logs` table) is empty before you run tests.
+* Notice: There are some tests that rely on database. It is possible to use `in-memory database` to make sure that the database is empty and clean but it costs a lot. So please make sure that the database (`logs` table) is empty before you run tests.
 
 ## Technical discussions (Images/Containers)
 This project includes five docker containers based on `php-apache`, `MySQL`, `Redis`, `PHPMyAdmin` and `Swagger` images.
