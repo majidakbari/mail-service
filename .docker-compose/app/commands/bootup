@@ -5,24 +5,12 @@ if [ `whoami` != 'www-data' ]; then
         exit 1
 fi
 
-printf "\033[0;32m > Laravel .env file ...\n"
-
-if [ ! -f /var/www/.env ];
- then
-    cp /var/www/.env.example /var/www/.env
-fi
-
-
 chown www-data:www-data .env
 chmod -Rf +w storage/logs
 chmod -Rf +w bootstrap/cache
 
 printf "\033[0;32m > composer install ...\n"
 (cd /var/www/ && composer install --ignore-platform-reqs)
-
-
-printf "\033[0;32m > Generating app key ...\n"
-(cd /var/www/ && php artisan key:generate --force)
 
 printf "\033[0;32m > Migrating the database"
 (cd /var/www/ && php artisan migrate --force)
