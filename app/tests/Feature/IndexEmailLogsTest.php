@@ -114,14 +114,31 @@ class IndexEmailLogsTest extends TestCase
         );
     }
 
-//    /**
-//     * @test
-//     * @group FeatureIndexLogs
-//     */
-//    public function testDateTimeFilters()
-//    {
-//
-//    }
+    /**
+     * @test
+     * @group FeatureIndexLogs
+     */
+    public function testDateTimeFilters()
+    {
+        $email = $this->faker->email;
+
+        factory(Log::class, $this->faker->randomNumber(2))->create([
+            'failed_at' => $this->faker->dateTimeBetween('-3years', '-2years'),
+            'sent_at' => $this->faker->dateTimeBetween('-4years', '-3years')
+        ]);
+
+        $response = $this->json('get', route('log.index', [], false), [
+            'email' => $email,
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)->assertJsonFragment([
+                'data' => [],
+                'total' => 0,
+                'current_page' => 1,
+                'last_page' => 1
+            ]
+        );
+    }
 
     /**
      * @test
