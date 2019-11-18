@@ -122,13 +122,16 @@ class IndexEmailLogsTest extends TestCase
     {
         $email = $this->faker->email;
 
-        factory(Log::class, $this->faker->randomNumber(2))->create([
+        $result = factory(Log::class, $this->faker->randomNumber(2))->create([
             'failed_at' => $this->faker->dateTimeBetween('-3years', '-2years'),
-            'sent_at' => $this->faker->dateTimeBetween('-4years', '-3years')
+            'sent_at' => $this->faker->dateTimeBetween('-4years', '-3years'),
+            'to' => $email
         ]);
 
         $response = $this->json('get', route('log.index', [], false), [
             'email' => $email,
+            'fromDate' => $this->faker->dateTimeBetween('-1year', 'now')->format('Y-m-d'),
+            'toDate' => now()->toDateString()
         ]);
 
         $response->assertStatus(Response::HTTP_OK)->assertJsonFragment([
