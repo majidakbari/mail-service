@@ -24,17 +24,17 @@ git clone git@github.com:majidakbari/mail-service.git
 ```
 
 ### Environment variables
-There is a `.env.example` file in the root of the project which contains OS level environment variables that are used for deploying the project and also for application variables.
-Every single variable inside this file, has a default value, so you do not need to change them; But you can also override your own variables. Cope the example file to the `.env` file, follow the following steps:
+There is a `.env.example` file in the root of the project which contains OS level environment variables that are used for deploying the whole project and also for running the application.
+Every single variable inside of this file, has a default value, so you do not need to change them; But you can also override your own variables. First Copy the example file to the `.env` file:
 ```bash
 cd /path-to-project
 cp .env.example .env
 ```
-Then open your favorite text editor like `vim` or `nano` and change the variables.
-For example `BACKEND_ADDRESS` environment variable shows that the project will run on the following port. You can change them to your desired values.
-Also all of the variables have comments which describe them.
+Then open your favorite text editor like `vim` or `nano` and change the variables. All of the variables have comments which describe them.
 
-* Notice: In this application I've totally removed laravel `.env` file and have used `OS` level environment variables. So if you want to change any variable do not forget to restart the containers so that your changes will affect. For restarting the containers use the following command:
+For example `BACKEND_ADDRESS` environment variable shows that the project will run on the following port. You can change them to your desired values. You can find different mail providers here, please fill your credentials for each service you want to use.
+
+* Notice: In this application laravel `.env` file is totally removed and `OS` level environment variables are used instead. So if you want to change any variable "after you ran the containers", do not forget to restart the application so that your changes will affect. For restarting the containers use the following command:
 ```bash
 docker-compose up -d --force-recreate
 ```
@@ -48,7 +48,7 @@ docker-compose up -d
 ### Bootup the application
 
 Only the first time that you want to run the application, you need to execute the following command.
-It will install the dependencies, creates .env laravel file, generates the application key, migrates the database and changes required directory permissions.
+It will install the dependencies, migrates the database and changes required directory permissions.
 
 ```bash
 docker-compose exec --user www-data app bootup
