@@ -77,7 +77,7 @@ class Log extends Model
     {
         $providers = $this->getEmailProviders();
 
-        return $providers[$this->provider];
+        return !empty($providers[$this->provider]) ? $providers[$this->provider] : MailProvider::NO_PROVIDERS;
     }
 
     /**

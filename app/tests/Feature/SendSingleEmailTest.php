@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\Jobs\SendSingleEmailJob;
 use App\ValueObjects\QueueManager;
-use EmailFactory;
 use App\ValueObjects\Email;
 use Illuminate\Support\Facades\Queue;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\Tools\CustomFactories\EmailFactory;
 use Tests\TestCase;
 
 /**

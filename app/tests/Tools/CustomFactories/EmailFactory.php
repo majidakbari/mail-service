@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Tools\CustomFactories;
+
 use App\ValueObjects\Email;
 use Faker\Generator as Faker;
 

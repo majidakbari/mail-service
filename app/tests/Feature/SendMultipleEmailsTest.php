@@ -4,10 +4,9 @@ namespace Tests\Feature;
 
 use App\Jobs\SendSingleEmailJob;
 use App\ValueObjects\QueueManager;
-use EmailFactory;
-use App\ValueObjects\Email;
 use Illuminate\Support\Facades\Queue;
 use Symfony\Component\HttpFoundation\Response;
+use Tests\Tools\CustomFactories\EmailFactory;
 use Tests\TestCase;
 
 /**
@@ -88,12 +87,13 @@ class SendMultipleEmailsTest extends TestCase
      * Validation error test
      * @param array $data
      */
-    public function validationErrorTest(array $data)
+    public function validationErrorTest(array $data): void
     {
         $response = $this->json('post', route('email.send.multiple', [], false), [
             'data' => $data
         ]);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        Queue::assertNothingPushed();
     }
 
     /**
@@ -102,10 +102,11 @@ class SendMultipleEmailsTest extends TestCase
      * @group FeatureSendMultipleEmails
      * Wrong request headers (Accept header)
      */
-    public function headerNotAcceptableTest()
+    public function headerNotAcceptableTest(): void
     {
         $response = $this->post(route('email.send.multiple', [], false), []);
 
         $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
+        Queue::assertNothingPushed();
     }
 }
