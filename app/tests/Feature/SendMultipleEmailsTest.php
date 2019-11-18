@@ -65,7 +65,7 @@ class SendMultipleEmailsTest extends TestCase
      * @test
      * @param array $emails
      * @dataProvider emailsDataProvider
-     * @group FeatureSendMultipleEmails
+     * @group FeatureSendMultipleEmailsTests
      */
     public function testSuccess(array $emails): void
     {
@@ -82,7 +82,7 @@ class SendMultipleEmailsTest extends TestCase
     /**
      * @test
      * @expectedExceptionCode 422
-     * @group FeatureSendMultipleEmails
+     * @group FeatureSendMultipleEmailsTests
      * @dataProvider wrongEmailNumberDataProvider
      * Validation error test
      * @param array $data
@@ -99,7 +99,7 @@ class SendMultipleEmailsTest extends TestCase
     /**
      * @test
      * @expectedExceptionCode 406
-     * @group FeatureSendMultipleEmails
+     * @group FeatureSendMultipleEmailsTests
      * Wrong request headers (Accept header)
      */
     public function headerNotAcceptableTest(): void

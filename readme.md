@@ -83,6 +83,12 @@ Navigate to the following address to see DB structure.
 `localhost:{{PMA_ADDRESS}}` (default equals to http://localhost:9092)
 
 ### Tests
+There are different types of testing methods which you can find under `app/tests` directory. Tests are divided to the following groups:
+* FeatureApplicationLevelTests
+* FeatureIndexLogsTests
+* FeatureSendMultipleEmailsTests
+* FeatureSendSingleEmailTests
+
 To run tests, in the terminal type the following command:
 ```bash
 docker-compose exec app vendor/bin/phpunit

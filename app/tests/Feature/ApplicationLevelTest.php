@@ -21,7 +21,7 @@ class ApplicationLevelTest extends TestCase
      * @test
      * @group FeatureApplicationLevelTests
      */
-    public function routeNotFoundTesT(): void
+    public function routeNotFoundTest(): void
     {
         $response = $this->json($this->faker->randomElement(self::HTTP_METHODS), $this->faker->randomAscii);
 

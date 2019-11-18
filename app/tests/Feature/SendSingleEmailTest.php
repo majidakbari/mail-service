@@ -49,7 +49,7 @@ class SendSingleEmailTest extends TestCase
      * @test
      * @param Email $email
      * @dataProvider emailDataProvider
-     * @group FeatureSendSingleEmail
+     * @group FeatureSendSingleEmailTests
      */
     public function testSuccess(Email $email): void
     {
@@ -66,7 +66,7 @@ class SendSingleEmailTest extends TestCase
     /**
      * @test
      * @expectedExceptionCode 422
-     * @group FeatureSendSingleEmail
+     * @group FeatureSendSingleEmailTests
      * Validation error test
      */
     public function validationErrorTest(): void
@@ -83,7 +83,7 @@ class SendSingleEmailTest extends TestCase
     /**
      * @test
      * @expectedExceptionCode 406
-     * @group FeatureSendSingleEmail
+     * @group FeatureSendSingleEmailTests
      * Wrong request headers (Accept header)
      */
     public function headerNotAcceptableTest(): void
