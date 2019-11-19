@@ -41,6 +41,10 @@ class MailService
      * @var FileHelper
      */
     private $fileHelper;
+    /**
+     * @var Swift_Mailer
+     */
+    private $swiftMailer;
 
     /**
      * MailService constructor.
@@ -104,7 +108,6 @@ class MailService
         }
     }
 
-
     /**
      * @return Swift_Mailer
      */
@@ -120,7 +123,7 @@ class MailService
             ->setPassword($provider->getPassword())
             ->setStreamOptions($provider->getStreamOptions());
 
-        return new Swift_Mailer($transport);
+        return resolve(Swift_Mailer::class, ['transport' => $transport]);
     }
 
     /**

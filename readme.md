@@ -8,7 +8,7 @@ This application is just a standalone micro service which provides REST HTTP end
 * Managing queues using `Horizon` and `supervisor`
 * Infrastructure level logs(Web server and Supervisor logs)
 * Application level logs (For every single Email)
-* Increased code coverage by writing different unit, functional and feature tests
+* Increased code coverage by writing different unit and feature tests
 * capable of sending `Markdown`, `HTML` and `Text` emails with files attached to them.
 * Powerful error handling
 * Descriptive API documentation powered by Swagger
