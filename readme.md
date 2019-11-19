@@ -93,6 +93,8 @@ There are different types of testing methods which you can find under `app/tests
 * FeatureIndexLogsTests
 * FeatureSendMultipleEmailsTests
 * FeatureSendSingleEmailTests
+* FeatureConsoleCommandTests
+* MarkdownToHtmlServiceUnitTest
 
 To run tests, in the terminal type the following command:
 ```bash

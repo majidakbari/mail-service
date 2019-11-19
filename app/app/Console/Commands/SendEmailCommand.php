@@ -42,6 +42,7 @@ class SendEmailCommand extends Command
     public function __construct(Factory $validationFactory)
     {
         parent::__construct();
+
         $this->validationFactory = $validationFactory;
     }
 
