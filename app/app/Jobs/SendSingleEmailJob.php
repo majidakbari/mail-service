@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Entities\Log;
 use App\Exceptions\NoMailProviderCouldSendEmailException;
 use App\Services\LogService;
 use App\Services\MailService;
@@ -69,10 +68,11 @@ class SendSingleEmailJob implements ShouldQueue
     /**
      * Execute the job.
      * @param LogService $logService
+     * @param MailService $mailService
      * @return void
      * @throws Exception
      */
-    public function handle(LogService $logService): void
+    public function handle(LogService $logService, MailService $mailService): void
     {
         if (is_null($mailProvider = $this->getProvider())) {
             $logService->fail($this->getEmail(), MailProvider::NO_PROVIDERS, trans('app.no_provider_could_send_email'));
@@ -80,13 +80,7 @@ class SendSingleEmailJob implements ShouldQueue
             throw new NoMailProviderCouldSendEmailException();
         }
 
-        /**
-         * @var MailService $mailService
-         * We need to resolve objects from the container instead of instantiating them manually
-         * In this case we can simply mock them in the test environment and also it is easy to change the code if
-         * something changes in the core of MailService class
-         */
-        $mailService = resolve(MailService::class, ['mailProvider' => $mailProvider]);
+        $mailService = $mailService->setMailProvider($mailProvider);
 
         $mailService->send($this->getEmail());
 

@@ -23,11 +23,44 @@ class MailService
     private $mailProvider;
 
     /**
-     * MailService constructor.
-     * @param MailProvider $mailProvider
+     * @var Swift_SmtpTransport
      */
-    public function __construct(MailProvider $mailProvider)
-    {
+    private $SMTPTransport;
+
+    /**
+     * @var MarkdownToHTMLService
+     */
+    private $markdownToHTMLService;
+
+    /**
+     * @var Swift_Message
+     */
+    private $swift_Message;
+
+    /**
+     * @var FileHelper
+     */
+    private $fileHelper;
+
+    /**
+     * MailService constructor.
+     * @param Swift_SmtpTransport $SMTPTransport
+     * @param MarkdownToHTMLService $markdownToHTMLService
+     * @param Swift_Message $swift_Message
+     * @param FileHelper $fileHelper
+     * @param MailProvider|null $mailProvider
+     */
+    public function __construct(
+        Swift_SmtpTransport $SMTPTransport,
+        MarkdownToHTMLService $markdownToHTMLService,
+        Swift_Message $swift_Message,
+        FileHelper $fileHelper,
+        $mailProvider = null
+    ) {
+        $this->SMTPTransport = $SMTPTransport;
+        $this->markdownToHTMLService = $markdownToHTMLService;
+        $this->swift_Message = $swift_Message;
+        $this->fileHelper = $fileHelper;
         $this->mailProvider = $mailProvider;
     }
 
@@ -41,10 +74,13 @@ class MailService
 
     /**
      * @param MailProvider $mailProvider
+     * @return MailService
      */
-    public function setMailProvider(MailProvider $mailProvider): void
+    public function setMailProvider(MailProvider $mailProvider): MailService
     {
         $this->mailProvider = $mailProvider;
+
+        return $this;
     }
 
     /**
@@ -75,11 +111,10 @@ class MailService
     private function prepareMailer(): Swift_Mailer
     {
         $provider = $this->getMailProvider();
-        $swiftSMTPTransport = new Swift_SmtpTransport(
-            $provider->getHost(),
-            $provider->getPort(),
-            $provider->getEncryption()
-        );
+        $swiftSMTPTransport = $this->SMTPTransport->setHost($provider->getHost())
+            ->setPort($provider->getPort())
+            ->setEncryption($provider->getEncryption());
+
         $transport = $swiftSMTPTransport
             ->setUsername($provider->getUsername())
             ->setPassword($provider->getPassword())
@@ -95,14 +130,10 @@ class MailService
     private function prepareMessage(Email $email): Swift_Message
     {
         if ($email->isMarkDown()) {
-            /** @var MarkdownToHTMLService $markdownConverterService */
-            $markdownConverterService = resolve(MarkdownToHTMLService::class);
-            $email->setBody($markdownConverterService->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);
+            $email->setBody($this->markdownToHTMLService->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);
         }
-        /** @var Swift_Message $swiftMessage */
-        $swiftMessage = resolve(Swift_Message::class);
 
-        $message = $swiftMessage
+        $message = $this->swift_Message
             ->setSubject($email->getSubject())
             ->setFrom($email->getFromAddress(), $email->getFromName())
             ->setTo($email->getTo())
@@ -112,7 +143,7 @@ class MailService
 
         if ($file = $email->getAttachFileCode()) {
             /** @var FileHelper $fileHelper */
-            $fileHelper = resolve(FileHelper::class, ['base64Code' => $file]);
+            $fileHelper = $this->fileHelper->setBase64Code($file);
             $message->attach(Swift_Attachment::fromPath($fileHelper->getFileAddress(),
                 $fileHelper->getMimeType())->setFilename($email->getAttachFileName())
             );

@@ -16,13 +16,13 @@ class MarkdownToHTMLService
      */
     private $parserService;
 
-
     /**
      * MarkdownToHTMLService constructor.
+     * @param Parsedown $parseDown
      */
-    public function __construct()
+    public function __construct(Parsedown $parseDown)
     {
-        $this->parserService = new Parsedown();
+        $this->parserService = $parseDown;
     }
 
     /**

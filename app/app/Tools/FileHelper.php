@@ -15,9 +15,9 @@ class FileHelper
 
     /**
      * FileHelper constructor.
-     * @param string $base64Code
+     * @param string|null $base64Code
      */
-    public function __construct(string $base64Code)
+    public function __construct(string $base64Code = null)
     {
         $this->base64Code = $base64Code;
     }
