@@ -75,7 +75,11 @@ class SendSingleEmailTest extends TestCase
         $emailFactory = resolve(EmailFactory::class);
         $email = $emailFactory->make(EmailFactory::EMAIL_UNCOMPLETED_BODY);
         $response = $this->json('post', route('email.send.single', [], false), $email->toArray());
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure([
+            'message' => ['body',]
+        ]);
+
         Queue::assertNothingPushed();
 
     }

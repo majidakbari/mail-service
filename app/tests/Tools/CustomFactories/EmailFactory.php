@@ -4,6 +4,7 @@ namespace Tests\Tools\CustomFactories;
 
 use App\ValueObjects\Email;
 use Faker\Generator as Faker;
+use InvalidArgumentException;
 
 /**
  * Because Email value object is not an Eloquent model and also it has different constructor rather than

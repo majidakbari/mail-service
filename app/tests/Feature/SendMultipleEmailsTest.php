@@ -55,8 +55,12 @@ class SendMultipleEmailsTest extends TestCase
         $emailFactory = resolve(EmailFactory::class);
 
         return [
-            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITHOUT_OPTIONAL_PROPERTIES, 101))],
-            [array()],
+            [objects_to_array($emailFactory->makeMany(EmailFactory::EMAIL_WITHOUT_OPTIONAL_PROPERTIES, 101)), [
+                'message' => ['data']
+            ]],
+            [array(), [
+                'message' => ['data']
+            ]],
         ];
     }
 
@@ -86,13 +90,15 @@ class SendMultipleEmailsTest extends TestCase
      * @dataProvider wrongEmailNumberDataProvider
      * Validation error test
      * @param array $data
+     * @param array $expectedStructure
      */
-    public function validationErrorTest(array $data): void
+    public function validationErrorTest(array $data, $expectedStructure): void
     {
         $response = $this->json('post', route('email.send.multiple', [], false), [
             'data' => $data
         ]);
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure($expectedStructure);
+
         Queue::assertNothingPushed();
     }
 
