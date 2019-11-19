@@ -106,7 +106,11 @@ class SendMultipleEmailsTest extends TestCase
     {
         $response = $this->post(route('email.send.multiple', [], false), []);
 
-        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE)->assertJson([
+            'error' => 'InvalidAcceptHeaderException',
+            'message' => trans('app.InvalidAcceptHeaderException')
+        ]);
+
         Queue::assertNothingPushed();
     }
 }

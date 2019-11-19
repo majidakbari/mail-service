@@ -89,7 +89,11 @@ class SendSingleEmailTest extends TestCase
     public function headerNotAcceptableTest(): void
     {
         $response = $this->post(route('email.send.single', [], false), []);
-        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE)->assertJson([
+            'error' => 'InvalidAcceptHeaderException',
+            'message' => trans('app.InvalidAcceptHeaderException')
+        ]);
+
         Queue::assertNothingPushed();
     }
 }

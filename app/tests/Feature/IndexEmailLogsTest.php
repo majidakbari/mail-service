@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Entities\Log;
 use Carbon\Carbon;
+use DateTime;
 use Faker\Generator;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,24 +20,306 @@ class IndexEmailLogsTest extends TestCase
     use  DatabaseTransactions, WithFaker;
 
     /**
+     * @var string
+     */
+    protected $email;
+
+    /**
+     * @var DateTime
+     */
+    protected $toDate;
+
+    /**
+     * @var DateTime
+     */
+    protected $fromDate;
+
+    /**
+     *
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->email = $this->faker->email;
+        $this->toDate = $this->faker->date('Y-m-d');
+        $this->fromDate = $this->faker->date('Y-m-d', $this->toDate);
+    }
+
+    /**
+     * @test
+     * @expectedExceptionCode 406
+     * @group FeatureIndexLogsTests
+     * Wrong request headers (Accept header)
+     */
+    public function headerNotAcceptableTest(): void
+    {
+        $response = $this->get(route('log.index', [], false));
+
+        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE)->assertJson([
+            'error' => 'InvalidAcceptHeaderException',
+            'message' => trans('app.InvalidAcceptHeaderException')
+        ]);
+    }
+
+    /**
+     * @test
+     * @expectedExceptionCode 422
+     * @dataProvider validationErrorProvider
+     * @group FeatureIndexLogsTests
+     * @param string $email
+     * @param string|null $fromDate
+     * @param string|null $toDate
+     * @param array $expectedStructure
+     */
+    public function validationErrorTest($email, $fromDate, $toDate, $expectedStructure): void
+    {
+        $response = $this->json('get', route('log.index', [], false), [
+            'email' => $email,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure($expectedStructure);
+    }
+
+    /**
      * @return array
      */
-    private function insertLogRecords(): array
+    public function validationErrorProvider(): array
+    {
+        //we do not have proper access to `$this` context in the providers
+        //so we have to resolve dependencies directly from the service container
+        $this->refreshApplication();
+        /** @var Generator $faker */
+        $faker = resolve(Generator::class);
+        return [
+            [
+                null,
+                null,
+                null,
+                [
+                    'message' => ['email']
+                ]
+            ],
+            [
+                $faker->name,
+                null,
+                null,
+                [
+                    'message' => ['email']
+                ]
+            ],
+            [
+                $faker->email,
+                $faker->dateTime,
+                $faker->randomDigit,
+                [
+                    'message' => ['toDate']
+                ]
+            ],
+            [
+                $faker->email,
+                $faker->randomDigit,
+                $faker->dateTime,
+                [
+                    'message' => ['fromDate']
+                ]
+            ],
+            [
+                $faker->email,
+                $faker->date('m-d'),
+                null,
+                [
+                    'message' => ['fromDate']
+                ]
+            ],
+            [
+                $faker->email,
+                null,
+                $faker->date('Y/m'),
+                [
+                    'message' => ['toDate']
+                ]
+            ],
+        ];
+    }
+
+
+    /**
+     * @group FeatureIndexLogsTests
+     * @param string $fromDate
+     * @param string $toDate
+     * @param array $excepted
+     */
+    public function runDateTest($fromDate, $toDate, $excepted): void
+    {
+        $response = $this->json('get', route('log.index', [], false), [
+            'email' => $this->email,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate,
+            'perPage' => 100
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)->assertJsonFragment([
+                'data' => $excepted,
+                'total' => count($excepted),
+                'current_page' => 1,
+                'last_page' => 1
+            ]
+        );
+    }
+
+    /**
+     * @test
+     * @group FeatureIndexLogsTests
+     * Test when both fromDate and toDate properties are null, all records should be returned in the API response
+     */
+    public function firstDateTest(): void
+    {
+        list($rightAtFromDate, $rightAtToDate, $afterToDate, $beforeFromDate, $betweenFromDateAndToDate) = $this->initDateTimeTest();
+
+        $this->runDateTest(
+            null,
+            null,
+            array_merge($rightAtFromDate, $rightAtToDate, $afterToDate, $beforeFromDate, $betweenFromDateAndToDate)
+        );
+    }
+
+    /**
+     * @test
+     * @group FeatureIndexLogsTests
+     *  Test when both fromDate and toDate properties exist, all records with dateTime between these two
+     *  should be returned in the API response
+     */
+    public function secondDateTest(): void
+    {
+        list($rightAtFromDate, $rightAtToDate, , , $betweenFromDateAndToDate) = $this->initDateTimeTest();
+
+        $this->runDateTest(
+            $this->fromDate,
+            $this->toDate,
+            array_merge($rightAtFromDate, $betweenFromDateAndToDate, $rightAtToDate)
+        );
+    }
+
+    /**
+     * @test
+     * @group FeatureIndexLogsTests
+     * Test when both fromDate and toDate properties exist, but fromDate is ahead of toDate! so an empty array should be
+     * returned in the API response
+     */
+    public function thirdDateTest(): void
+    {
+        $this->initDateTimeTest();
+
+        $this->runDateTest(
+            $this->toDate,
+            $this->fromDate,
+            []
+        );
+    }
+
+    /**
+     * @test
+     * @group FeatureIndexLogsTests
+     * Test when only fromDate filter exists, all the records with datetime after this time, should be returned in the
+     * API response
+     */
+    public function fourthDateTest(): void
+    {
+        list($rightAtFromDate, $rightAtToDate, $afterToDate, , $betweenFromDateAndToDate) = $this->initDateTimeTest();
+
+        $this->runDateTest(
+            $this->fromDate,
+            null,
+            array_merge($rightAtFromDate, $betweenFromDateAndToDate, $rightAtToDate, $afterToDate)
+        );
+    }
+
+    /**
+     * @test
+     * @group FeatureIndexLogsTests
+     * Test when only toDate filter exists, all the records with datetime before this time, should be returned in the
+     * API response
+     */
+    public function fifthDateTest(): void
+    {
+        list($rightAtFromDate, $rightAtToDate, , $beforeFromDate, $betweenFromDateAndToDate) = $this->initDateTimeTest();
+
+        $this->runDateTest(
+            null,
+            $this->toDate,
+            array_merge($beforeFromDate, $rightAtFromDate, $betweenFromDateAndToDate, $rightAtToDate)
+        );
+    }
+
+    /**
+     * @return array
+     * Generating log records for different test cases
+     */
+    protected function initDateTimeTest(): array
+    {
+        $rightAtFromDate = $this->generateRecordsForDateTimeFilterTesting($this->fromDate);
+        $rightAtToDate = $this->generateRecordsForDateTimeFilterTesting($this->toDate);
+        $afterToDate = $this->generateRecordsForDateTimeFilterTesting(Carbon::createFromFormat('Y-m-d', $this->toDate)
+            ->addWeeks($this->faker->numberBetween(1, 10))
+            ->toDateString()
+        );
+        $beforeFromDate = $this->generateRecordsForDateTimeFilterTesting(Carbon::createFromFormat('Y-m-d',
+            $this->fromDate)
+            ->subWeeks($this->faker->numberBetween(1, 10))
+            ->toDateString()
+        );
+        $betweenFromDateAndToDate = $this->generateRecordsForDateTimeFilterTesting(
+            $this->faker->dateTimeBetween($this->fromDate, $this->toDate)->format('Y-m-d')
+        );
+
+        return [$rightAtFromDate, $rightAtToDate, $afterToDate, $beforeFromDate, $betweenFromDateAndToDate];
+    }
+
+    /**
+     * @param string $date
+     * @return array
+     */
+    protected function generateRecordsForDateTimeFilterTesting(string $date): array
+    {
+        $success = factory(Log::class, $this->faker->randomDigit)->state('success')->create(
+            [
+                'to' => $this->email,
+                'sent_at' => $date
+            ]
+        )->toArray();
+
+        $failure = factory(Log::class, $this->faker->randomDigit)->state('failed')->create(
+            [
+                'to' => $this->email,
+                'failed_at' => $date
+            ]
+        )->toArray();
+
+        return array_merge($success, $failure);
+    }
+
+    /**
+     * @return array
+     */
+    protected function insertLogRecords(): array
     {
         $numberOfSuccessLogs = $this->faker->numberBetween(1, 10);
         $numberOfFailedLogs = $this->faker->numberBetween(1, 10);
-        $email = $this->faker->email;
 
         $success = factory(Log::class, $numberOfSuccessLogs)->state('success')->create([
-            'to' => $email
+            'to' => $this->email
         ])->toArray();
 
         $failed = factory(Log::class, $numberOfFailedLogs)->state('failed')->create([
-            'to' => $email
+            'to' => $this->email
         ])->toArray();
 
-        return [$numberOfSuccessLogs, $numberOfFailedLogs, $email, array_merge($success, $failed)];
+        return [$numberOfSuccessLogs, $numberOfFailedLogs, array_merge($success, $failed)];
     }
+
 
     /**
      * @test
@@ -44,10 +327,10 @@ class IndexEmailLogsTest extends TestCase
      */
     public function testSuccess(): void
     {
-        list($numberOfSuccessLogs, $numberOfFailedLogs, $email, $expected) = $this->insertLogRecords();
+        list($numberOfSuccessLogs, $numberOfFailedLogs, $expected) = $this->insertLogRecords();
 
         $response = $this->json('get', route('log.index', [], false), [
-            'email' => $email,
+            'email' => $this->email,
             'perPage' => $numberOfFailedLogs + $numberOfSuccessLogs,
         ]);
 
@@ -90,180 +373,4 @@ class IndexEmailLogsTest extends TestCase
             "total"
         ]);
     }
-
-    /**
-     * @test
-     * @expectedExceptionCode 406
-     * @group FeatureIndexLogsTests
-     * Wrong request headers (Accept header)
-     */
-    public function headerNotAcceptableTest(): void
-    {
-        $response = $this->get(route('log.index', [], false));
-
-        $response->assertStatus(Response::HTTP_NOT_ACCEPTABLE);
-    }
-
-    /**
-     * @test
-     * @expectedExceptionCode 422
-     * @dataProvider validationErrorProvider
-     * @group FeatureIndexLogsTests
-     * @param mixed $email
-     * @param mixed $fromDate
-     * @param mixed $toDate
-     */
-    public function validationErrorTest($email, $fromDate, $toDate): void
-    {
-        $response = $this->json('get', route('log.index', [], false), [
-            'email' => $email,
-            'fromDate' => $fromDate,
-            'toDate' => $toDate
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
-     * @return array
-     */
-    public function validationErrorProvider(): array
-    {
-        //we do not have proper access to `$this` context in the providers
-        //so we have to resolve dependencies directly from the service container
-        $this->refreshApplication();
-        /** @var Generator $faker */
-        $faker = resolve(Generator::class);
-        return [
-            [null, null, null],
-            [$faker->name, null, null],
-            [$faker->email, $faker->dateTime, $faker->randomDigit],
-            [$faker->email, $faker->randomDigit, $faker->dateTime],
-            [$faker->email, $faker->date('m-d'), null],
-            [$faker->email, null, $faker->date('Y/m')],
-        ];
-    }
-
-
-    /**
-     * @test
-     * @group FeatureIndexLogsTests
-     * @dataProvider dateTimeDataProvider
-     * @param string $email
-     * @param string $fromDate
-     * @param string $toDate
-     * @param array $excepted
-     */
-    public function testDateTimeFilters($email, $fromDate, $toDate, $excepted): void
-    {
-        $response = $this->json('get', route('log.index', [], false), [
-            'email' => $email,
-            'fromDate' => $fromDate,
-            'toDate' => $toDate,
-            'perPage' => 100
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK)->assertJsonFragment([
-                'data' => $excepted,
-                'total' => count($excepted),
-                'current_page' => 1,
-                'last_page' => 1
-            ]
-        );
-    }
-
-    /**
-     * @return array
-     * Creating log records with different times
-     */
-    public function dateTimeDataProvider(): array
-    {
-        //we do not have proper access to `$this` context in the providers
-        //so we have to resolve dependencies directly from the service container
-        $this->refreshApplication();
-        /** @var Generator $faker */
-        $faker = resolve(Generator::class);
-        $email = $faker->email;
-        //Generating different times
-        $secondDate = $faker->date('Y-m-d');
-        $firstDate = $faker->date('Y-m-d', $secondDate);
-
-        $rightAtFirstDate = $this->generateRecordsForDateTimeFilterTesting($email, $firstDate, $faker);
-        $rightAtSecondDate = $this->generateRecordsForDateTimeFilterTesting($email, $secondDate, $faker);
-        $afterSecondDate = $this->generateRecordsForDateTimeFilterTesting(
-            $email,
-            Carbon::createFromFormat('Y-m-d', $secondDate)
-                ->addWeeks($faker->numberBetween(1, 10))
-                ->toDateString(),
-            $faker
-        );
-        $beforeFirstDate = $this->generateRecordsForDateTimeFilterTesting(
-            $email,
-            Carbon::createFromFormat('Y-m-d', $firstDate)
-                ->subWeeks($faker->numberBetween(1, 10))
-                ->toDateString(),
-            $faker
-        );
-
-        $betweenFistAndSecondDate = $this->generateRecordsForDateTimeFilterTesting(
-            $email,
-            $faker->dateTimeBetween($firstDate, $secondDate)->format('Y-m-d'),
-            $faker
-        );
-
-        return [
-            [
-                $email,
-                null,
-                null,
-                array_merge($beforeFirstDate, $rightAtFirstDate, $betweenFistAndSecondDate, $rightAtSecondDate,
-                    $afterSecondDate)
-            ],
-            [
-                $email,
-                $firstDate,
-                $secondDate,
-                array_merge($rightAtFirstDate, $betweenFistAndSecondDate, $rightAtSecondDate)
-            ],
-            [$email, $secondDate, $firstDate, []],
-            [
-                $email,
-                $firstDate,
-                null,
-                array_merge($rightAtFirstDate, $betweenFistAndSecondDate, $rightAtSecondDate, $afterSecondDate)
-            ],
-            [
-                $email,
-                null,
-                $secondDate,
-                array_merge($beforeFirstDate, $rightAtFirstDate, $betweenFistAndSecondDate, $rightAtSecondDate)
-            ]
-        ];
-    }
-
-
-    /**
-     * @param string $email
-     * @param string $date
-     * @param Generator $faker
-     * @return array
-     */
-    private function generateRecordsForDateTimeFilterTesting(string $email, string $date, Generator $faker): array
-    {
-        $success = factory(Log::class, $faker->randomDigit)->state('success')->create(
-            [
-                'to' => $email,
-                'sent_at' => $date
-            ]
-        )->toArray();
-        $failure = factory(Log::class, $faker->randomDigit)->state('failed')->create(
-            [
-                'to' => $email,
-                'failed_at' => $date
-            ]
-        )->toArray();
-
-        return array_merge($success, $failure);
-    }
-
 }
