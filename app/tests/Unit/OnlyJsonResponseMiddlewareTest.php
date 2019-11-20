@@ -20,7 +20,7 @@ class OnlyJsonResponseMiddlewareTest extends TestCase
      * @param string $header
      * @param string $expectedHeader
      */
-    public function testSuccess($header, $expectedHeader)
+    public function testSuccess($header, $expectedHeader): void
     {
         /** @var Request $request */
         /** @var OnlyJsonResponseMiddleware $middleware */
@@ -34,7 +34,7 @@ class OnlyJsonResponseMiddlewareTest extends TestCase
     /**
      * @return array
      */
-    public function successTestDataProvider()
+    public function successTestDataProvider(): array
     {
         return [
             ['*/*', 'application/json'],
@@ -48,7 +48,7 @@ class OnlyJsonResponseMiddlewareTest extends TestCase
      * @param string $header
      * @dataProvider failedDataProvider
      */
-    public function testFailed($header)
+    public function testFailed($header): void
     {
         /** @var Request $request */
         /** @var OnlyJsonResponseMiddleware $middleware */
@@ -60,9 +60,10 @@ class OnlyJsonResponseMiddlewareTest extends TestCase
     }
 
     /**
+     * Couple of test cases for invalid `Accept` headers for this application
      * @return array
      */
-    public function failedDataProvider()
+    public function failedDataProvider(): array
     {
         return [
             ['image/jpeg'],

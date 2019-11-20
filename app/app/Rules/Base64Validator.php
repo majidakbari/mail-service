@@ -39,7 +39,7 @@ class Base64Validator implements Rule
      * @param string $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (is_string($value)) {
             $fileHelper = new FileHelper($value);
@@ -55,7 +55,7 @@ class Base64Validator implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return trans('validation.base64');
     }

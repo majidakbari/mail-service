@@ -22,7 +22,7 @@ class CreateLogsTable extends Migration
             $table->text('body');
             $table->text('failed_reason')->nullable();
             $table->json('email_metadata')->nullable();
-            $table->string('provider');
+            $table->integer('provider');
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('failed_at')->nullable();
 

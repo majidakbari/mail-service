@@ -74,7 +74,7 @@ class FileHelper
     /**
      * @return array
      */
-    public static function getImageMimeTypes()
+    public static function getImageMimeTypes(): array
     {
         return [
             'image/jpeg',
@@ -92,7 +92,7 @@ class FileHelper
     /**
      * @return array
      */
-    public static function getVideoMimeTypes()
+    public static function getVideoMimeTypes(): array
     {
         return [
             'video/mp4',
@@ -111,7 +111,7 @@ class FileHelper
     /**
      * @return array
      */
-    public static function getAudioMimeTypes()
+    public static function getAudioMimeTypes(): array
     {
         return [
             'audio/mpeg',
@@ -133,7 +133,7 @@ class FileHelper
     /**
      * @return array
      */
-    public static function getDocumentMimeTypes()
+    public static function getDocumentMimeTypes(): array
     {
         return [
             'text/csv',
@@ -153,7 +153,7 @@ class FileHelper
     /**
      * @return array
      */
-    public static function getAllValidMimeTypes()
+    public static function getAllValidMimeTypes(): array
     {
         return array_merge(
             static::getAudioMimeTypes(),

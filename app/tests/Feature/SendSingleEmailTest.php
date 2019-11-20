@@ -60,7 +60,8 @@ class SendSingleEmailTest extends TestCase
         Queue::assertPushedOn(QueueManager::SINGLE_EMAIL_QUEUE, SendSingleEmailJob::class,
             function (SendSingleEmailJob $job) use ($email) {
                 return $job->getEmail()->toArray() == $email->toArray();
-            });
+            }
+        );
     }
 
     /**
@@ -81,7 +82,6 @@ class SendSingleEmailTest extends TestCase
         ]);
 
         Queue::assertNothingPushed();
-
     }
 
     /**
