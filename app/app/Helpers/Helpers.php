@@ -39,3 +39,19 @@ if (!function_exists('objects_to_array')) {
         }, $data);
     }
 }
+
+
+if (!function_exists('mutate_multilevel_array')) {
+    function mutate_multilevel_array(array $data) {
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = $value[0];
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+}
