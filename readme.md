@@ -100,12 +100,14 @@ There are different types of testing methods which you can find under `app/tests
 * LogRepositoryUnitTests
 * APIResponseUnitTests
 * FileHelperUnitTests
+* LogServiceUnitTests
 
-You can run each group individually by passing `--group {groupName}` to phpunit command. Of course it is possible to develop many more test cases for this application. 
-To run tests, in the terminal type the following command:
+To run tests, in the terminal enter the following command:
 ```bash
 docker-compose exec app vendor/bin/phpunit
 ```
+You can run each group individually by passing `--group {groupName}` to phpunit command. Of course it is possible to create many more test cases for this application. 
+
 * Notice: There are some tests that rely on database. It is possible to use `in-memory database` to make sure that the database is empty and clean but it costs a lot. So please make sure that the database (`logs` table) is empty before you run tests.
 
 ## Technical discussions (Images/Containers)
