@@ -99,6 +99,7 @@ There are different types of testing methods which you can find under `app/tests
 * CustomValidatorUnitTests
 * LogRepositoryUnitTests
 * APIResponseUnitTests
+* FileHelperUnitTests
 
 You can run each group individually by passing `--group {groupName}` to phpunit command. Of course it is possible to develop many more test cases for this application. 
 To run tests, in the terminal type the following command:
