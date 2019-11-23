@@ -269,6 +269,14 @@ class Email
     }
 
     /**
+     * @return bool
+     */
+    public function hasAttachment(): bool
+    {
+        return !empty($this->getAttachFileCode());
+    }
+
+    /**
      * @return array
      */
     public function getMetaData()

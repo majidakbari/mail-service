@@ -41,10 +41,7 @@ class MailService
      * @var FileHelper
      */
     private $fileHelper;
-    /**
-     * @var Swift_Mailer
-     */
-    private $swiftMailer;
+
 
     /**
      * MailService constructor.
@@ -101,7 +98,6 @@ class MailService
             $mailer->getTransport()->stop();
 
             return true;
-
         } catch (Exception $e) {
             //We can have some kind of log here to monitor our SMTP relay performance, mailbox addresses and etc...
             throw $e;
@@ -111,9 +107,10 @@ class MailService
     /**
      * @return Swift_Mailer
      */
-    private function prepareMailer(): Swift_Mailer
+    public function prepareMailer(): Swift_Mailer
     {
         $provider = $this->getMailProvider();
+
         $swiftSMTPTransport = $this->SMTPTransport->setHost($provider->getHost())
             ->setPort($provider->getPort())
             ->setEncryption($provider->getEncryption());
@@ -130,7 +127,7 @@ class MailService
      * @param Email $email
      * @return Swift_Message
      */
-    private function prepareMessage(Email $email): Swift_Message
+    public function prepareMessage(Email $email): Swift_Message
     {
         if ($email->isMarkDown()) {
             $email->setBody($this->markdownToHTMLService->convert($email->getBody()))->setBodyType(Email::BODY_TYPE_HTML);

@@ -101,6 +101,7 @@ There are different types of testing methods which you can find under `app/tests
 * APIResponseUnitTests
 * FileHelperUnitTests
 * LogServiceUnitTests
+* MailServiceUnitTests
 
 To run tests, in the terminal enter the following command:
 ```bash

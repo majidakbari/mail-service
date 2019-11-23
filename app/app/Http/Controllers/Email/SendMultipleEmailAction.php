@@ -8,7 +8,6 @@ use App\Traits\MakeEmailJobTrait;
 use App\ValueObjects\QueueManager;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
