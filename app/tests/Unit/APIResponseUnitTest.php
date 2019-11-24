@@ -126,7 +126,7 @@ class APIResponseUnitTest extends TestCase
     private function getRandomResponseHeaders(): array
     {
         $popularHeaders = self::POPULAR_RESPONSE_HEADERS;
-        $headers = array_rand(self::POPULAR_RESPONSE_HEADERS, $this->faker->numberBetween(1, count($popularHeaders)));
+        $headers = array_rand(self::POPULAR_RESPONSE_HEADERS, $this->faker->numberBetween(2, count($popularHeaders)));
 
         return array_intersect_key($popularHeaders, array_flip($headers));
     }

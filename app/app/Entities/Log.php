@@ -99,4 +99,15 @@ class Log extends Model
 
         return $result;
     }
+
+    /**
+     * @return array
+     */
+    public function withoutDatesToArray(): array
+    {
+        $result = $this->toArray();
+        unset($result['sent_at'], $result['failed_at']);
+
+        return $result;
+    }
 }

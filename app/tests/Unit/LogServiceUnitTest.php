@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Entities\Log;
 use App\Interfaces\LogRepositoryInterface;
 use App\Services\LogService;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Mockery\LegacyMockInterface;
 use Tests\TestCase;
@@ -16,7 +17,7 @@ use Tests\Tools\CustomFactories\EmailFactory;
  */
 class LogServiceUnitTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, DatabaseTransactions;
 
     /**
      * @var EmailFactory
@@ -54,7 +55,7 @@ class LogServiceUnitTest extends TestCase
 
         $this->mock(LogRepositoryInterface::class, function (LegacyMockInterface $mock) use($log) {
             $mock->shouldReceive('save')->once()->withArgs(function(Log $arg) use($log){
-                return $log->toArray() == $arg->toArray();
+                return $log->withoutDatesToArray() == $arg->withoutDatesToArray();
             });
         });
 
@@ -86,7 +87,7 @@ class LogServiceUnitTest extends TestCase
 
         $this->mock(LogRepositoryInterface::class, function (LegacyMockInterface $mock) use($log) {
             $mock->shouldReceive('save')->once()->withArgs(function(Log $arg) use($log){
-                return $log->toArray() == $arg->toArray();
+                return $log->withoutDatesToArray() == $arg->withoutDatesToArray();
             });
         });
 

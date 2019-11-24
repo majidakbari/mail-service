@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Console\Commands\SendEmailCommand;
+use App\Jobs\SendSingleEmailJob;
+use App\ValueObjects\QueueManager;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tests\Tools\CustomFactories\EmailFactory;
 
@@ -18,6 +21,8 @@ class ConsoleCommandTest extends TestCase
      */
     public function testSuccess(): void
     {
+        Queue::fake();
+
         /** @var EmailFactory $emailFactory */
         $emailFactory = resolve(EmailFactory::class);
         $email = $emailFactory->make(EmailFactory::EMAIL_WITH_FILE_ATTACHED);
@@ -26,13 +31,17 @@ class ConsoleCommandTest extends TestCase
             ->expectsQuestion('Enter the recipient email address', $email->getTo())
             ->expectsQuestion('Enter the email subject', $email->getSubject())
             ->expectsQuestion('Enter the email body', $email->getBody())
-            ->expectsQuestion('Enter the email body type, one of the following properties: text/html, text/plain, text/markdown', $email->getBodyType())
+            ->expectsQuestion('Enter the email body type, one of the following properties: text/html, text/plain, text/markdown',
+                $email->getBodyType())
             ->expectsQuestion('Enter the email fromName property', $email->getFromName())
             ->expectsQuestion('Enter the email fromAddress property', $email->getFromAddress())
-            ->expectsQuestion('Enter the base64 encoded of file (this field is optional), press enter to skip', $email->getAttachFileCode())
+            ->expectsQuestion('Enter the base64 encoded of file (this field is optional), press enter to skip',
+                $email->getAttachFileCode())
             ->expectsQuestion('Enter the attached file name', $email->getAttachFileName())
             ->expectsQuestion('Enter email cc (this field is optional), press enter to skip', $email->getCc()[0])
             ->expectsQuestion('Enter email bcc (this field is optional), press enter to skip', $email->getBcc()[0])
             ->assertExitCode(0);
+
+        Queue::assertPushedOn(QueueManager::SINGLE_EMAIL_QUEUE, SendSingleEmailJob::class);
     }
 }
