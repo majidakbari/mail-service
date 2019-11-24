@@ -51,7 +51,7 @@ Only the first time that you want to run the application, you need to execute th
 It will install dependencies, migrates the database and modifies required directory permissions.
 
 ```bash
-docker-compose exec --user www-data app bootup
+docker-compose exec app bootup
 ```
 ## Features descriptions 
 

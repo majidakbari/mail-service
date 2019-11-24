@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ `whoami` != 'www-data' ]; then
-        echo "Please run as www-data"
+if [ `whoami` != 'root' ]; then
+        echo "Please run as root"
         exit 1
 fi
 
@@ -14,3 +14,6 @@ printf "\033[0;32m > composer install ...\n"
 
 printf "\033[0;32m > Migrating the database"
 (cd /var/www/ && php artisan migrate --force)
+
+printf "\033[0;32m > Restarting Supervisor"
+supervisorctl restart all
